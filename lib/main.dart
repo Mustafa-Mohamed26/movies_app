@@ -4,6 +4,7 @@ import 'package:movies_app/ui/auth/login_screen.dart';
 import 'package:movies_app/ui/auth/register_screen.dart';
 import 'package:movies_app/ui/home/home_screen.dart';
 import 'package:movies_app/ui/home/profile_screen.dart';
+import 'package:movies_app/ui/home/update_profile_screen.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_1.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_2.dart';
 import 'package:movies_app/utils/app_routes.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.updateProfile,
       routes: {
         AppRoutes.login: (context) =>  LoginScreen(),
         AppRoutes.register: (context) =>  RegisterScreen(),
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.onboarding2: (context) =>  OnboardingScreen2(),
         AppRoutes.home: (context) =>  HomeScreen(),
         AppRoutes.profile: (context) =>  ProfileScreen(),
+        AppRoutes.updateProfile: (context) =>  UpdateProfileScreen(),
       },
 
       darkTheme: AppTheme.darkTheme,

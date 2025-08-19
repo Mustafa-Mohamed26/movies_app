@@ -10,6 +10,7 @@ class AppAssets {
   // all logos 
   static const String logo = "assets/images/splash_logo.png";
   static const String google = "assets/images/google.png";
+  static const String forgotPassword = "assets/images/Forgot password.png";
 
   // avatars
   static const String avatar1 = "assets/images/avatar_1.png";

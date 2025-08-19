@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // This button is used to navigate to the forget password screen
                           TextButton(
                             onPressed: () {
-                              //TODO: forget password
+                              Navigator.pushNamed(context, AppRoutes.forgotPassword);
                             },
                             child: Text(
                               'Forget Password?',
