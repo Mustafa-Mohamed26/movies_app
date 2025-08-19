@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.login,
       routes: {
         AppRoutes.login: (context) =>  LoginScreen(),
-        AppRoutes.register: (context) => const RegisterScreen(),
-        AppRoutes.forgotPassword: (context) => const ForgotPasswordScreen(),
-        AppRoutes.onboarding1: (context) => const OnboardingScreen1(),
+        AppRoutes.register: (context) =>  RegisterScreen(),
+        AppRoutes.forgotPassword: (context) =>  ForgotPasswordScreen(),
+        AppRoutes.onboarding1: (context) =>  OnboardingScreen1(),
         AppRoutes.onboarding2: (context) =>  OnboardingScreen2(),
-        AppRoutes.home: (context) => const HomeScreen(),
-        AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.home: (context) =>  HomeScreen(),
+        AppRoutes.profile: (context) =>  ProfileScreen(),
       },
 
       darkTheme: AppTheme.darkTheme,
