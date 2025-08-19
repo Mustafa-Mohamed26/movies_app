@@ -1,0 +1,25 @@
+class AppAssets {
+  // Onboarding Images
+  static const String onboarding1 = 'assets/images/onboarding_image_1.png';
+  static const String onboarding2 = 'assets/images/onboarding_image_2.png';
+  static const String onboarding3 = 'assets/images/onboarding_image_3.png';
+  static const String onboarding4 = 'assets/images/onboarding_image_4.png';
+  static const String onboarding5 = 'assets/images/onboarding_image_5.png';
+  static const String onboarding6 = 'assets/images/onboarding_image_6.png';
+
+  // all logos 
+  static const String logo = "assets/images/splash_logo.png";
+  static const String google = "assets/images/google.png";
+  static const String forgotPassword = "assets/images/Forgot password.png";
+
+  // avatars
+  static const String avatar1 = "assets/images/avatar_1.png";
+  static const String avatar2 = "assets/images/avatar_2.png";
+  static const String avatar3 = "assets/images/avatar_3.png";
+  static const String avatar4 = "assets/images/avatar_4.png";
+  static const String avatar5 = "assets/images/avatar_5.png";
+  static const String avatar6 = "assets/images/avatar_6.png";
+  static const String avatar7 = "assets/images/avatar_7.png";
+  static const String avatar8 = "assets/images/avatar_8.png";
+  static const String avatar9 = "assets/images/avatar_9.png";
+}
