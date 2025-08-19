@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_resources.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_button.dart';
@@ -18,17 +19,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  List<String> avatarList = [
-    AppAssets.avatar1,
-    AppAssets.avatar2,
-    AppAssets.avatar3,
-    AppAssets.avatar4,
-    AppAssets.avatar5,
-    AppAssets.avatar6,
-    AppAssets.avatar7,
-    AppAssets.avatar8,
-    AppAssets.avatar9,
-  ];
+  
 
   // controllers
   TextEditingController nameController = TextEditingController();
@@ -82,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         enlargeStrategy: CenterPageEnlargeStrategy.scale,
                         enlargeFactor: 0.35,
                       ),
-                      items: avatarList.map((avatarPath) {
+                      items: AppResources.avatarList.map((avatarPath) {
                         return Builder(
                           builder: (BuildContext context) {
                             return Container(
