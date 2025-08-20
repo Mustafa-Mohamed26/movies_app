@@ -22,4 +22,10 @@ class AppAssets {
   static const String avatar7 = "assets/images/avatar_7.png";
   static const String avatar8 = "assets/images/avatar_8.png";
   static const String avatar9 = "assets/images/avatar_9.png";
+
+  //icons
+  static const String homeIcon = "assets/icons/home_icon.png";
+  static const String searchIcon = "assets/icons/search_icon.png";
+  static const String browseIcon = "assets/icons/browse_icon.png";
+  static const String profileIcon = "assets/icons/profile_icon.png";
 }

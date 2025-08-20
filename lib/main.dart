@@ -3,8 +3,8 @@ import 'package:movies_app/ui/auth/forgot_password_screen.dart';
 import 'package:movies_app/ui/auth/login_screen.dart';
 import 'package:movies_app/ui/auth/register_screen.dart';
 import 'package:movies_app/ui/home/home_screen.dart';
-import 'package:movies_app/ui/home/profile_screen.dart';
-import 'package:movies_app/ui/home/update_profile_screen.dart';
+import 'package:movies_app/ui/home/tabs/profile/profile_screen.dart';
+import 'package:movies_app/ui/home/tabs/profile/update_profile_screen.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_1.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_2.dart';
 import 'package:movies_app/utils/app_routes.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: AppRoutes.updateProfile,
+      initialRoute: AppRoutes.home,
       routes: {
         AppRoutes.login: (context) =>  LoginScreen(),
         AppRoutes.register: (context) =>  RegisterScreen(),
