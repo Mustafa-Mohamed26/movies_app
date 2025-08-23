@@ -18,20 +18,20 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: AppRoutes.home,
+      initialRoute: AppRoutes.updateProfile,
       routes: {
-        AppRoutes.login: (context) =>  LoginScreen(),
-        AppRoutes.register: (context) =>  RegisterScreen(),
-        AppRoutes.forgotPassword: (context) =>  ForgotPasswordScreen(),
-        AppRoutes.onboarding1: (context) =>  OnboardingScreen1(),
-        AppRoutes.onboarding2: (context) =>  OnboardingScreen2(),
-        AppRoutes.home: (context) =>  HomeScreen(),
-        AppRoutes.profile: (context) =>  ProfileScreen(),
-        AppRoutes.updateProfile: (context) =>  UpdateProfileScreen(),
+        AppRoutes.login: (context) => LoginScreen(),
+        AppRoutes.register: (context) => RegisterScreen(),
+        AppRoutes.forgotPassword: (context) => ForgotPasswordScreen(),
+        AppRoutes.onboarding1: (context) => OnboardingScreen1(),
+        AppRoutes.onboarding2: (context) => OnboardingScreen2(),
+        AppRoutes.home: (context) => HomeScreen(),
+        AppRoutes.profile: (context) => ProfileScreen(),
+        AppRoutes.updateProfile: (context) => UpdateProfileScreen(),
       },
 
       darkTheme: AppTheme.darkTheme,

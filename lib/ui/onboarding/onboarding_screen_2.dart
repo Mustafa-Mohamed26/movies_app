@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/model/onboarding_item.dart';
+import 'package:movies_app/models/onboarding_item.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_styles.dart';
