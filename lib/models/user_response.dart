@@ -1,26 +1,33 @@
 // a class to represent the user response
 class UserResponse {
   String? message;
-  User? data;
+  User? user;
 
-  UserResponse({this.message, this.data});
+  UserResponse({this.message, this.user});
 
   UserResponse.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ?  User.fromJson(json['data']) : null;
+    // Handle case when message is a List or a String
+    if (json['message'] is List) {
+      message = (json['message'] as List).join("\n");
+    } else {
+      message = json['message']?.toString(); // force to String if not null
+    }
+
+    user = json['data'] != null ? User.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    if (user != null) {
+      data['data'] = user!.toJson();
     }
     return data;
   }
 }
 
-class User { // this is the official user model to use in the app
+class User {
+  // this is the official user model to use in the app
   String? email;
   String? password;
   String? name;
@@ -31,16 +38,17 @@ class User { // this is the official user model to use in the app
   String? updatedAt;
   int? iV;
 
-  User(
-      {this.email,
-      this.password,
-      this.name,
-      this.phone,
-      this.avaterId,
-      this.sId,
-      this.createdAt,
-      this.updatedAt,
-      this.iV});
+  User({
+    this.email,
+    this.password,
+    this.name,
+    this.phone,
+    this.avaterId,
+    this.sId,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     email = json['email'];
@@ -55,7 +63,7 @@ class User { // this is the official user model to use in the app
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  <String, dynamic>{};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['email'] = email;
     data['password'] = password;
     data['name'] = name;
