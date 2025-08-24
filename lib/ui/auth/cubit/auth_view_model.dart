@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/api/api_manager.dart';
+import 'package:movies_app/models/login_request.dart';
 import 'package:movies_app/models/user_request.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
 
@@ -24,9 +25,8 @@ class AuthViewModel extends Cubit<AuthStates> {
 
   void register() async {
     if (formKey.currentState!.validate()) {
+      emit(AuthLoadingState());
       try {
-        // loading
-        emit(AuthLoadingState());
         var response = await ApiManager.register(
           UserRequest(
             name: nameController.text,
@@ -41,11 +41,37 @@ class AuthViewModel extends Cubit<AuthStates> {
           emit(AuthErrorState(errorMessage: response?.message ?? "Error"));
           return;
         }
-        if (response?.message == "User created successfully") {
+        emit(
+          AuthSuccessState(
+            successMessage: response?.message ?? "success",
+            user: response?.user,
+          ),
+        );
+      } catch (e) {
+        emit(AuthErrorState(errorMessage: e.toString()));
+      }
+    }
+  }
+
+  void login() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        emit(AuthLoadingState());
+        var response = await ApiManager.login(
+          LoginRequest(
+            email: emailController.text,
+            password: passwordController.text,
+          ),
+        );
+        if (response?.message != "Success Login") {
+          emit(AuthErrorState(errorMessage: response?.message ?? "Error"));
+          return;
+        }
+        if (response?.message == "Success Login") {
           emit(
             AuthSuccessState(
               successMessage: response?.message ?? "success",
-              user: response?.user,
+              token: response?.token,
             ),
           );
         }

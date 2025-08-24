@@ -11,6 +11,26 @@ class UserCubit extends Cubit<UserStates> {
     emit(UserLoaded(user: user, token: token));
   }
 
+  // save user only
+  void setUser(User? user) {
+    if (state is UserLoaded) {
+      final currentState = state as UserLoaded;
+      emit(
+        currentState.copyWith(user: user),
+      );
+    }
+  }
+
+  // save token only
+  void setToken(String? token) {
+    if (state is UserLoaded) {
+      final currentState = state as UserLoaded;
+      emit(
+        currentState.copyWith(token: token),
+      );
+    }
+  }
+
   // update only the user
   void updateUser(User newUser) {
     if (state is UserLoaded) {

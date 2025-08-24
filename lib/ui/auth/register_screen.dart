@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
 import 'package:movies_app/ui/auth/cubit/auth_view_model.dart';
-import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_resources.dart';
 import 'package:movies_app/utils/app_routes.dart';
@@ -48,9 +47,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (state is AuthLoadingState) {
           DialogUtils.showLoading(context: context, loadingText: "Loading...");
         } else if (state is AuthSuccessState) {
+          DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: state.successMessage,
+            message: state.successMessage ?? "",
             title: "Success",
             posActionName: "OK",
             posAction: () => Navigator.pushNamedAndRemoveUntil(
@@ -60,11 +60,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           );
         } else if (state is AuthErrorState) {
+          DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
             message: state.errorMessage,
             title: "Error",
-            posActionName: "Retry",
+            posActionName: "Ok",
             posAction: () => Navigator.pop(context),
           );
         }
@@ -81,7 +82,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-
                     // Avatar carousel
                     Padding(
                       padding: EdgeInsets.only(bottom: height * 0.03),

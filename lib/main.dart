@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/bloc/user_cubit/user_cubit.dart';
 import 'package:movies_app/ui/auth/forgot_password_screen.dart';
 import 'package:movies_app/ui/auth/login_screen.dart';
 import 'package:movies_app/ui/auth/register_screen.dart';
@@ -11,7 +13,16 @@ import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_theme.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<UserCubit>(
+          create: (_) => UserCubit(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: AppRoutes.register,
+      initialRoute: AppRoutes.login,
       routes: {
         AppRoutes.login: (context) => LoginScreen(),
         AppRoutes.register: (context) => RegisterScreen(),
