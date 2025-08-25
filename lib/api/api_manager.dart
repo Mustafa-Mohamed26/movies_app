@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:movies_app/api/api_constants.dart';
 import 'package:movies_app/api/end_points.dart';
+import 'package:movies_app/models/list_of_movies_response.dart';
 import 'package:movies_app/models/login_request.dart';
 import 'package:movies_app/models/login_response.dart';
 import 'package:movies_app/models/user_request.dart';
@@ -41,6 +42,23 @@ class ApiManager {
       var responseBody = response.body;
       var json = jsonDecode(responseBody);
       return LoginResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<ListOfMoviesResponse?> getListOfMovies({String? genre, int? limit, int? page}) async {
+    Uri url = Uri.https(ApiConstants.moviesBaseUrl, EndPoints.listMoviesApi, {
+      "genre": genre,
+      "limit": limit.toString(),
+      "page": page.toString(),
+    });
+
+    try {
+      var response = await http.get(url);
+      var responseBody = response.body;
+      var json = jsonDecode(responseBody);
+      return ListOfMoviesResponse.fromJson(json);
     } catch (e) {
       throw Exception(e);
     }

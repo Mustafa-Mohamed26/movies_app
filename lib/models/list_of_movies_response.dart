@@ -87,33 +87,34 @@ class Movies {
   String? dateUploaded;
   int? dateUploadedUnix;
 
-  Movies(
-      {this.id,
-      this.url,
-      this.imdbCode,
-      this.title,
-      this.titleEnglish,
-      this.titleLong,
-      this.slug,
-      this.year,
-      this.rating,
-      this.runtime,
-      this.genres,
-      this.summary,
-      this.descriptionFull,
-      this.synopsis,
-      this.ytTrailerCode,
-      this.language,
-      this.mpaRating,
-      this.backgroundImage,
-      this.backgroundImageOriginal,
-      this.smallCoverImage,
-      this.mediumCoverImage,
-      this.largeCoverImage,
-      this.state,
-      this.torrents,
-      this.dateUploaded,
-      this.dateUploadedUnix});
+  Movies({
+    this.id,
+    this.url,
+    this.imdbCode,
+    this.title,
+    this.titleEnglish,
+    this.titleLong,
+    this.slug,
+    this.year,
+    this.rating,
+    this.runtime,
+    this.genres,
+    this.summary,
+    this.descriptionFull,
+    this.synopsis,
+    this.ytTrailerCode,
+    this.language,
+    this.mpaRating,
+    this.backgroundImage,
+    this.backgroundImageOriginal,
+    this.smallCoverImage,
+    this.mediumCoverImage,
+    this.largeCoverImage,
+    this.state,
+    this.torrents,
+    this.dateUploaded,
+    this.dateUploadedUnix,
+  });
 
   Movies.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -124,9 +125,11 @@ class Movies {
     titleLong = json['title_long'];
     slug = json['slug'];
     year = json['year'];
-    rating = json['rating'];
+    rating = (json['rating'] as num?)?.toDouble(); // ✅ fix
     runtime = json['runtime'];
-    genres = json['genres'].cast<String>();
+    genres = (json['genres'] != null)
+        ? List<String>.from(json['genres'])
+        : null;
     summary = json['summary'];
     descriptionFull = json['description_full'];
     synopsis = json['synopsis'];
@@ -182,6 +185,7 @@ class Movies {
     return data;
   }
 }
+
 
 class Torrents {
   String? url;

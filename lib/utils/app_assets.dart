@@ -11,6 +11,12 @@ class AppAssets {
   static const String logo = "assets/images/splash_logo.png";
   static const String google = "assets/images/google.png";
   static const String forgotPassword = "assets/images/Forgot password.png";
+  static const String availableNow = "assets/images/Available Now.png";
+  static const String watchNow ="assets/images/Watch Now.png";
+
+  //test
+  static const String test1 = "assets/images/slider_test_!.png";
+  static const String test2 = "assets/images/slider_test_2.png";
 
   // avatars
   static const String avatar1 = "assets/images/avatar_1.png";

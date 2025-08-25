@@ -1,0 +1,239 @@
+import 'dart:math'; // 👈 علشان random
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
+import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
+import 'package:movies_app/utils/app_assets.dart';
+import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_styles.dart';
+import 'package:movies_app/widgets/custom_card.dart';
+
+class HomeTab extends StatefulWidget {
+  const HomeTab({super.key});
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  MovieListViewModel allMoviesViewModel = MovieListViewModel();
+  MovieListViewModel genreMoviesViewModel = MovieListViewModel();
+
+  int currentIndex = 0;
+  String selectedGenre = "Action";
+
+  // 👇 list of genres
+  final List<String> genres = [
+    "Action",
+    "Adventure",
+    "Animation",
+    "Biography",
+    "Comedy",
+    "Crime",
+    "Documentary",
+    "Drama",
+    "Family",
+    "Fantasy",
+    "Film-Noir",
+    "History",
+    "Horror",
+    "Music",
+    "Musical",
+    "Mystery",
+    "Romance",
+    "Sci-Fi",
+    "Sport",
+    "Thriller",
+    "War",
+    "Western",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ every time we open the home tab we get a random genre
+    selectedGenre = genres[Random().nextInt(genres.length)];
+
+    allMoviesViewModel.loadMoviesList(limit: 50, page: 1); // all movies
+    genreMoviesViewModel.loadMoviesList(
+      genre: selectedGenre,
+      limit: 50,
+      page: 1,
+    ); // genre movies
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      body: BlocBuilder<MovieListViewModel, MovieListStates>(
+        bloc: allMoviesViewModel,
+        builder: (context, state) {
+          if (state is MovieListErrorState) {
+            return Center(
+              child: Text(state.errorMessage, style: AppStyles.regular20white),
+            );
+          }
+
+          if (state is MovieListSuccessState) {
+            var movies = state.moviesList;
+
+            return Stack(
+              children: [
+                // 🎬 Background
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 600),
+                  child: Container(
+                    key: ValueKey<String>(
+                      "${currentIndex}_${movies[currentIndex].largeCoverImage ?? "default"}",
+                    ),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                            (movies[currentIndex].largeCoverImage != null &&
+                                movies[currentIndex]
+                                    .largeCoverImage!
+                                    .isNotEmpty)
+                            ? NetworkImage(
+                                movies[currentIndex].largeCoverImage!,
+                              )
+                            : AssetImage(AppAssets.test1) as ImageProvider,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 🎬 Foreground
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.darkBlack80,
+                        AppColors.darkBlack60,
+                        AppColors.black,
+                      ],
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: height * 0.02),
+                        Image.asset(AppAssets.availableNow),
+                        SizedBox(height: height * 0.02),
+
+                        // ✅ Carousel for All Movies
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                            height: height * 0.35,
+                            viewportFraction: 0.55,
+                            enlargeFactor: 0.35,
+                            onPageChanged: (index, reason) {
+                              setState(() => currentIndex = index);
+                            },
+                          ),
+                          items: movies.map((movie) {
+                            return CustomCard(
+                              image: movie.largeCoverImage ?? "",
+                              rate: movie.rating ?? 0.0,
+                            );
+                          }).toList(),
+                        ),
+
+                        SizedBox(height: height * 0.02),
+                        Image.asset(AppAssets.watchNow),
+                        SizedBox(height: height * 0.02),
+
+                        // ✅ Dynamic Genre Header
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                selectedGenre,
+                                style: AppStyles.regular16white,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "See More",
+                                    style: AppStyles.regular16yellow,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: AppColors.yellow,
+                                    size: 15,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // ✅ BlocBuilder for Random Genre Movies
+                        BlocBuilder<MovieListViewModel, MovieListStates>(
+                          bloc: genreMoviesViewModel,
+                          builder: (context, genreState) {
+                            if (genreState is MovieListSuccessState) {
+                              var genreMovies = genreState.moviesList;
+                              return SizedBox(
+                                height: height * 0.22,
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  itemCount: genreMovies.length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(width: width * 0.03),
+                                  itemBuilder: (context, index) {
+                                    return AspectRatio(
+                                      aspectRatio: 2 / 3,
+                                      child: CustomCard(
+                                        image:
+                                            genreMovies[index]
+                                                .largeCoverImage ??
+                                            "",
+                                        rate: genreMovies[index].rating ?? 0.0,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                            if (genreState is MovieListErrorState) {
+                              return Text(
+                                genreState.errorMessage,
+                                style: AppStyles.regular16white,
+                              );
+                            }
+                            return const Center(
+                              child: CircularProgressIndicator(color: AppColors.yellow,),
+                            );
+                          },
+                        ),
+
+                        SizedBox(height: height * 0.03),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return const Center(child: CircularProgressIndicator(color: AppColors.yellow,));
+        },
+      ),
+    );
+  }
+}
