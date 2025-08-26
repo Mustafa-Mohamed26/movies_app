@@ -1,4 +1,5 @@
-import 'dart:math'; // 👈 علشان random
+import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_card.dart';
 
@@ -98,7 +100,7 @@ class _HomeTabState extends State<HomeTab> {
                                 movies[currentIndex]
                                     .largeCoverImage!
                                     .isNotEmpty)
-                            ? NetworkImage(
+                            ? CachedNetworkImageProvider(
                                 movies[currentIndex].largeCoverImage!,
                               )
                             : AssetImage(AppAssets.test1) as ImageProvider,
@@ -144,6 +146,14 @@ class _HomeTabState extends State<HomeTab> {
                             return CustomCard(
                               image: movie.largeCoverImage ?? "",
                               rate: movie.rating ?? 0.0,
+                              onTap: () {
+                                // TODO: navigate to movie details
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.details,
+                                  arguments: movie.id,
+                                );
+                              },
                             );
                           }).toList(),
                         ),
@@ -204,6 +214,14 @@ class _HomeTabState extends State<HomeTab> {
                                                 .largeCoverImage ??
                                             "",
                                         rate: genreMovies[index].rating ?? 0.0,
+                                        onTap: () {
+                                          //TODO: go to details screen
+                                          Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.details,
+                                            arguments: genreMovies[index].id,
+                                          );
+                                        },
                                       ),
                                     );
                                   },
@@ -217,7 +235,9 @@ class _HomeTabState extends State<HomeTab> {
                               );
                             }
                             return const Center(
-                              child: CircularProgressIndicator(color: AppColors.yellow,),
+                              child: CircularProgressIndicator(
+                                color: AppColors.yellow,
+                              ),
                             );
                           },
                         ),
@@ -231,7 +251,9 @@ class _HomeTabState extends State<HomeTab> {
             );
           }
 
-          return const Center(child: CircularProgressIndicator(color: AppColors.yellow,));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.yellow),
+          );
         },
       ),
     );

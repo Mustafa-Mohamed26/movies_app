@@ -8,7 +8,11 @@ class MovieListViewModel extends Cubit<MovieListStates> {
   void loadMoviesList({String? genre, int? limit, int? page}) async {
     emit(MovieListLoadingState());
     try {
-      var response = await ApiManager.getListOfMovies(genre: genre, limit: limit, page: page);
+      var response = await ApiManager.getListOfMovies(
+        genre: genre,
+        limit: limit,
+        page: page,
+      );
       if (response?.status != "ok") {
         emit(
           MovieListErrorState(errorMessage: response?.statusMessage ?? "Error"),
