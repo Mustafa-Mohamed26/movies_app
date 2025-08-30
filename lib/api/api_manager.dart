@@ -53,11 +53,13 @@ class ApiManager {
     String? genre,
     int? limit,
     int? page,
+    String? query,
   }) async {
     Uri url = Uri.https(ApiConstants.moviesBaseUrl, EndPoints.listMoviesApi, {
       "genre": genre,
       "limit": limit.toString(),
       "page": page.toString(),
+      "query_term": query,
     });
 
     try {

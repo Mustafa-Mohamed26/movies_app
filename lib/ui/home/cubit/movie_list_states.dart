@@ -6,6 +6,8 @@ class MovieListInitialState extends MovieListStates {}
 
 class MovieListLoadingState extends MovieListStates {}
 
+class MovieListEmptyState extends MovieListStates {}
+
 class MovieListSuccessState extends MovieListStates {
   List<Movies> moviesList = [];
   MovieListSuccessState({required this.moviesList});
