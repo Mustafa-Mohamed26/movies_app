@@ -49,6 +49,24 @@ class ApiManager {
     }
   }
 
+  static Future<UserResponse?> getProfile({required String token}) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.profileApi);
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json", // to be able to send json
+          "Authorization": "Bearer $token", // to be able to send the token
+        },
+      );
+      var responseBody = response.body;
+      var json = jsonDecode(responseBody);
+      return UserResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<ListOfMoviesResponse?> getListOfMovies({
     String? genre,
     int? limit,

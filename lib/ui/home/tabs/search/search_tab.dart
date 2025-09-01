@@ -76,10 +76,13 @@ class _SearchTabState extends State<SearchTab> {
                 ),
               );
             }
-            return SizedBox(
-              height: height * 0.25,
+            return Expanded(
               child: Center(
-                child: Text("Start Searching", style: AppStyles.regular20white),
+                child: Image.asset(
+                  AppAssets.emptyListIcon,
+                  width: width * 0.5,
+                  height: height * 0.5,
+                ),
               ),
             );
           },

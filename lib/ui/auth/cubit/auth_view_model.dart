@@ -4,15 +4,16 @@ import 'package:movies_app/api/api_manager.dart';
 import 'package:movies_app/models/login_request.dart';
 import 'package:movies_app/models/user_request.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthViewModel extends Cubit<AuthStates> {
   AuthViewModel() : super(AuthInitialState());
   // controllers
   TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController = TextEditingController(text: "mustafa1234@gmail.com");
 
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController = TextEditingController(text: "esayhya73M@");
 
   TextEditingController confirmPasswordController = TextEditingController();
 
@@ -68,10 +69,12 @@ class AuthViewModel extends Cubit<AuthStates> {
           return;
         }
         if (response?.message == "Success Login") {
+          // save token in shared preferences
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          await pref.setString('token', response?.token ?? '');
           emit(
             AuthSuccessState(
               successMessage: response?.message ?? "success",
-              token: response?.token,
             ),
           );
         }

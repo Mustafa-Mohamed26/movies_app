@@ -23,12 +23,9 @@ class _BrowseTabState extends State<BrowseTab> {
   @override
   void initState() {
     super.initState();
-    movieListViewModel.loadMoviesList(
-      genre: selectedGenre,
-      limit: 50,
-      page: 1,
-    );
+    movieListViewModel.loadMoviesList(genre: selectedGenre, limit: 50, page: 1);
   }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -36,11 +33,7 @@ class _BrowseTabState extends State<BrowseTab> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(
-            top: height * 0.02,
-            left: width * 0.03,
-           
-          ),
+          padding: EdgeInsets.only(top: height * 0.02, left: width * 0.03),
           child: DefaultTabController(
             length: AppConstants.genres.length,
             child: TabBar(
@@ -71,34 +64,37 @@ class _BrowseTabState extends State<BrowseTab> {
             ),
           ),
         ),
-        BlocBuilder<MovieListViewModel, MovieListStates>(
-          bloc: movieListViewModel,
-          builder: (context, state) {
-            if (state is MovieListErrorState) {
-              return Center(
-                child: Text(
-                  state.errorMessage,
-                  style: AppStyles.regular20white,
-                ),
-              );
-            }
-            if (state is MovieListEmptyState) {
-              return Center(
-                child: Text("No Movies Found", style: AppStyles.regular20white),
-              );
-            }
-            if (state is MovieListSuccessState) {
-              return Expanded(
-                child: Custom2columnGridView(
+        Expanded(
+          child: BlocBuilder<MovieListViewModel, MovieListStates>(
+            bloc: movieListViewModel,
+            builder: (context, state) {
+              if (state is MovieListErrorState) {
+                return Center(
+                  child: Text(
+                    state.errorMessage,
+                    style: AppStyles.regular20white,
+                  ),
+                );
+              }
+              if (state is MovieListEmptyState) {
+                return Center(
+                  child: Text(
+                    "No Movies Found",
+                    style: AppStyles.regular20white,
+                  ),
+                );
+              }
+              if (state is MovieListSuccessState) {
+                return Custom2columnGridView(
                   count: state.moviesList.length,
                   moviesList: state.moviesList,
-                ),
+                );
+              }
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.yellow),
               );
-            }
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.yellow),
-            );
-          },
+            },
+          ),
         ),
       ],
     );

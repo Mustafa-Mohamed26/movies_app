@@ -46,9 +46,9 @@ class CustomButton extends StatelessWidget {
           ? Row(
             mainAxisAlignment: mainAxisAlignment!,
               children: [
-                iconWidget!,
-                SizedBox(width: width * 0.02),
                 Text(text, style: textStyle),
+                SizedBox(width: width * 0.02),
+                iconWidget!,
               ],
             )
           : Text(text, style: textStyle),

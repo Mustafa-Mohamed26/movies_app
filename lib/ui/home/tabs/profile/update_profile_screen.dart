@@ -6,7 +6,7 @@ import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  UpdateProfileScreen({super.key});
+  const UpdateProfileScreen({super.key});
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();

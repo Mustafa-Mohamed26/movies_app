@@ -3,6 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/utils/app_colors.dart';
 
 class AppStyles {
+  static TextStyle bold36white = GoogleFonts.inter(
+    fontWeight: FontWeight.w700,
+    fontSize: 36,
+    color: AppColors.white,
+  );
+  
   static TextStyle bold20yellow = GoogleFonts.inter(
     fontWeight: FontWeight.w700,
     fontSize: 20,
