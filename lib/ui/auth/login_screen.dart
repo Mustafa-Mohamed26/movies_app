@@ -8,6 +8,7 @@ import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
+import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_switch.dart';
@@ -100,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Validate the email input
                           // Check if the email is empty or not valid
                           validate: (text) =>
-                              authViewModel.emailValidator(text),
+                              AppValidators.emailValidator(text),
                         ),
                         SizedBox(height: height * 0.02),
 
@@ -139,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Validate the password input
                           // Check if the password is empty or less than 6 characters
                           validate: (text) =>
-                              authViewModel.passwordValidator(text),
+                              AppValidators.passwordValidator(text),
                         ),
                         SizedBox(height: height * 0.01),
 

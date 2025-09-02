@@ -21,12 +21,13 @@ class _ProfileTabState extends State<ProfileTab>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  ProfileViewModel profileViewModel = ProfileViewModel();
+  late ProfileViewModel profileViewModel;
 
   @override
   void initState() {
     super.initState();
-    profileViewModel.getProfile();
+    profileViewModel = context.read<ProfileViewModel>();
+    //profileViewModel.getProfile();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -62,23 +63,30 @@ class _ProfileTabState extends State<ProfileTab>
                         );
                       }
                       if (state is ProfileSuccessState) {
-                        return Column(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.transparent,
-                              ),
-                              padding: const EdgeInsets.all(8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.asset(
-                                  AppResources.avatarList[state.user.avaterId ?? 0],
-                                  fit: BoxFit.cover,
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.asset(
+                                    AppResources
+                                        .avatarList[state.user?.avaterId ?? 0],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(state.user.name ?? '', style: AppStyles.bold20white),
-                          ],
+                              Text(
+                                state.user?.name ?? '',
+                                style: AppStyles.bold20white,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         );
                       }
                       return const Center(
@@ -90,17 +98,21 @@ class _ProfileTabState extends State<ProfileTab>
                   ),
 
                   // WishList and History
-                  Column(
-                    children: [
-                      Text("12", style: AppStyles.bold36white),
-                      Text("WishList", style: AppStyles.bold24white),
-                    ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text("12", style: AppStyles.bold36white),
+                        Text("WishList", style: AppStyles.bold24white),
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: [
-                      Text("20", style: AppStyles.bold36white),
-                      Text("History", style: AppStyles.bold24white),
-                    ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text("20", style: AppStyles.bold36white),
+                        Text("History", style: AppStyles.bold24white),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -126,10 +138,15 @@ class _ProfileTabState extends State<ProfileTab>
                   Expanded(
                     flex: 1,
                     child: CustomButton(
-                      onPressed: () async{
-                        final SharedPreferences pref = await SharedPreferences.getInstance();
+                      onPressed: () async {
+                        final SharedPreferences pref =
+                            await SharedPreferences.getInstance();
                         await pref.remove('token');
-                        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (result) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.login,
+                          (result) => false,
+                        );
                       },
                       text: "Exit",
                       hasIcon: true,

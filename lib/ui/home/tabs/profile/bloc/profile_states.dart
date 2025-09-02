@@ -12,7 +12,7 @@ class ProfileErrorState extends ProfileStates {
 }
 
 class ProfileSuccessState extends ProfileStates {
-  User user;
+  User? user;
   String successMessage;
-  ProfileSuccessState(this.successMessage, this.user);
+  ProfileSuccessState({required this.successMessage, this.user});
 }
