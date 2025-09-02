@@ -14,6 +14,6 @@ class AuthErrorState extends AuthStates {
 class AuthSuccessState extends AuthStates {
   User? user;
   String? successMessage;
-  String? token;
-  AuthSuccessState({this.successMessage, this.user, this.token});
+  
+  AuthSuccessState({this.successMessage, this.user});
 }

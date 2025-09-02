@@ -2,17 +2,18 @@ import 'package:colorful_iconify_flutter/icons/circle_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:movies_app/bloc/user_cubit/user_cubit.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
 import 'package:movies_app/ui/auth/cubit/auth_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
+import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_switch.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userCubit = context.read<UserCubit>();
+    
     var width = MediaQuery.of(
       context,
     ).size.width; // Get the width of the screen
@@ -43,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is AuthLoadingState) {
           DialogUtils.showLoading(context: context, loadingText: "Loading...");
         } else if (state is AuthSuccessState) {
-          userCubit.setToken(state.token); // Set the token
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Validate the email input
                           // Check if the email is empty or not valid
                           validate: (text) =>
-                              authViewModel.emailValidator(text),
+                              AppValidators.emailValidator(text),
                         ),
                         SizedBox(height: height * 0.02),
 
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Validate the password input
                           // Check if the password is empty or less than 6 characters
                           validate: (text) =>
-                              authViewModel.passwordValidator(text),
+                              AppValidators.passwordValidator(text),
                         ),
                         SizedBox(height: height * 0.01),
 
