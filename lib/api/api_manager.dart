@@ -91,9 +91,7 @@ class ApiManager {
     }
   }
 
-  static Future <UpdateResponse?> deleteProfile({
-    required String token,
-  }) async {
+  static Future<UpdateResponse?> deleteProfile({required String token}) async {
     Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.profileApi);
     try {
       var response = await http.delete(
@@ -103,6 +101,34 @@ class ApiManager {
           "Authorization": "Bearer $token", // to be able to send the token
         },
       );
+      var responseBody = response.body;
+      var json = jsonDecode(responseBody);
+      return UpdateResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<UpdateResponse?> resetPassword({
+    required String token,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.resetPasswordApi);
+
+    try {
+      var response = await http.patch(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "oldPassword": oldPassword,
+          "newPassword": newPassword,
+        }),
+      );
+
       var responseBody = response.body;
       var json = jsonDecode(responseBody);
       return UpdateResponse.fromJson(json);

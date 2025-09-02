@@ -4,6 +4,7 @@ import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/ui/auth/login_screen.dart';
 import 'package:movies_app/ui/auth/register_screen.dart';
 import 'package:movies_app/ui/auth/forgot_password_screen.dart';
+import 'package:movies_app/ui/home/tabs/profile/profile_reset_password_screen.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_1.dart';
 import 'package:movies_app/ui/onboarding/onboarding_screen_2.dart';
 import 'package:movies_app/ui/home/home_screen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.login: (context) => LoginScreen(),
         AppRoutes.register: (context) => RegisterScreen(),
         AppRoutes.forgotPassword: (context) => ForgotPasswordScreen(),
+        AppRoutes.resetPassword: (context) => ProfileResetPasswordScreen(),
         AppRoutes.onboarding1: (context) => OnboardingScreen1(),
         AppRoutes.onboarding2: (context) => OnboardingScreen2(),
         AppRoutes.home: (context) => const HomeScreen(),

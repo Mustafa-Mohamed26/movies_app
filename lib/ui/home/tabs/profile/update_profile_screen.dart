@@ -6,6 +6,7 @@ import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_resources.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
+import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
@@ -50,13 +51,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             message: state.successMessage,
             posActionName: "OK",
             posAction: () {
-              isDeleted
-                  ? Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRoutes.login,
-                      (result) => false,
-                    )
-                  : Navigator.pop(context);
+              if (isDeleted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.login,
+                  (route) => false,
+                );
+              } else {
+                Navigator.pop(context);
+              }
             },
           );
         } else if (state is ProfileErrorState) {
@@ -74,6 +77,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         appBar: AppBar(title: const Text("Pick avatar")),
         body: Form(
           key: profileViewModel.formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.04),
             child: Column(
@@ -185,12 +189,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     color: AppColors.white,
                   ),
                   hintText: "Phone Number",
+                  validate: AppValidators.phoneValidator,
                 ),
                 SizedBox(height: height * 0.02),
                 Row(
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.resetPassword);
+                      },
                       child: Text(
                         "Reset Password",
                         style: AppStyles.regular20white,

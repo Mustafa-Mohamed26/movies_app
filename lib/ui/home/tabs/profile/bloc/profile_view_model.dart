@@ -12,8 +12,16 @@ class ProfileViewModel extends Cubit<ProfileStates> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  // reset password controllers
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
   // GlobalKey for the form state
   var formKey = GlobalKey<FormState>();
+
+  // GlobalKey for the reset password form state
+  var resetPasswordFormKey = GlobalKey<FormState>();
 
   // selected avatar index
   int selectedAvatarIndex = 0;
@@ -47,11 +55,14 @@ class ProfileViewModel extends Cubit<ProfileStates> {
   }
 
   void updateProfile() async {
-    if (!formKey.currentState!.validate()) return;
+    if (!(formKey.currentState?.validate() ?? false)) return;
+
     emit(ProfileLoadingState());
+
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString('token');
+
       var response = await ApiManager.updateProfile(
         token: token ?? '',
         updateRequest: UpdateRequest(
@@ -60,6 +71,7 @@ class ProfileViewModel extends Cubit<ProfileStates> {
           avaterId: selectedAvatarIndex,
         ),
       );
+
       if (response?.message != "Profile updated successfully") {
         emit(ProfileErrorState(response?.message ?? "Error"));
         return;
@@ -72,35 +84,76 @@ class ProfileViewModel extends Cubit<ProfileStates> {
   }
 
   void deleteProfile() async {
-  emit(ProfileLoadingState());
-  try {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString('token');
+    emit(ProfileLoadingState());
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString('token');
 
-    if (token == null || token.isEmpty) {
-      emit(ProfileErrorState("Token not found"));
-      return;
+      if (token == null || token.isEmpty) {
+        emit(ProfileErrorState("Token not found"));
+        return;
+      }
+
+      var response = await ApiManager.deleteProfile(token: token);
+
+      if (response == null) {
+        emit(ProfileErrorState("No response from server"));
+        return;
+      }
+
+      if (response.message != "Profile deleted successfully") {
+        emit(ProfileErrorState(response.message ?? "Error"));
+        return;
+      }
+
+      // ✅ remove token from shared preferences
+      await pref.remove('token');
+
+      emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
+    } catch (e) {
+      emit(ProfileErrorState(e.toString()));
     }
-
-    var response = await ApiManager.deleteProfile(token: token);
-
-    if (response == null) {
-      emit(ProfileErrorState("No response from server"));
-      return;
-    }
-
-    if (response.message != "Profile deleted successfully") {
-      emit(ProfileErrorState(response.message ?? "Error"));
-      return;
-    }
-
-    // ✅ remove token from shared preferences
-    await pref.remove('token');
-
-    emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
-  } catch (e) {
-    emit(ProfileErrorState(e.toString()));
   }
-}
 
+  void resetPassword() async {
+    if (!(resetPasswordFormKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    emit(ProfileLoadingState());
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString('token');
+
+      if (token == null || token.isEmpty) {
+        emit(ProfileErrorState("User not logged in or token missing"));
+        return;
+      }
+
+      final response = await ApiManager.resetPassword(
+        token: token,
+        oldPassword: oldPasswordController.text.trim(),
+        newPassword: passwordController.text.trim(),
+      );
+
+      if (response == null) {
+        emit(ProfileErrorState("No response from server"));
+        return;
+      }
+
+      if (response.message != "Password updated successfully") {
+        emit(ProfileErrorState(response.message ?? "Error"));
+        return;
+      }
+
+      emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
+
+      // Clear the password fields after successful reset
+      oldPasswordController.clear();
+      passwordController.clear();
+      confirmPasswordController.clear();
+    } catch (e) {
+      emit(ProfileErrorState("Error: $e"));
+    }
+  }
 }
