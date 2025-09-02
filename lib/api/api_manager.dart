@@ -91,6 +91,26 @@ class ApiManager {
     }
   }
 
+  static Future <UpdateResponse?> deleteProfile({
+    required String token,
+  }) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.profileApi);
+    try {
+      var response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json", // to be able to send json
+          "Authorization": "Bearer $token", // to be able to send the token
+        },
+      );
+      var responseBody = response.body;
+      var json = jsonDecode(responseBody);
+      return UpdateResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<ListOfMoviesResponse?> getListOfMovies({
     String? genre,
     int? limit,

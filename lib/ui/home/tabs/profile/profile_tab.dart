@@ -27,7 +27,7 @@ class _ProfileTabState extends State<ProfileTab>
   void initState() {
     super.initState();
     profileViewModel = context.read<ProfileViewModel>();
-    //profileViewModel.getProfile();
+    profileViewModel.getProfile();
     _tabController = TabController(length: 2, vsync: this);
   }
 

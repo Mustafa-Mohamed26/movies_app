@@ -33,6 +33,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isEnglish = true;
 
   @override
+  void initState() {
+    authViewModel.avaterId = 0;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(
       context,
@@ -94,10 +100,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           viewportFraction: 0.33,
                           enlargeStrategy: CenterPageEnlargeStrategy.scale,
                           enlargeFactor: 0.35,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              authViewModel.avaterId = index;
+                            });
+                          },
                         ),
                         items: AppResources.avatarList.map((avatarPath) {
-                          authViewModel.avaterId = AppResources.avatarList
-                              .indexOf(avatarPath);
                           return Builder(
                             builder: (BuildContext context) {
                               return Container(

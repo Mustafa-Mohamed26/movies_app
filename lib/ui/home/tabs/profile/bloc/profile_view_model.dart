@@ -60,14 +60,6 @@ class ProfileViewModel extends Cubit<ProfileStates> {
           avaterId: selectedAvatarIndex,
         ),
       );
-      print(
-        UpdateRequest(
-          name: nameController.text,
-          phone: phoneController.text,
-          avaterId: selectedAvatarIndex,
-        ).toJson(),
-      );
-
       if (response?.message != "Profile updated successfully") {
         emit(ProfileErrorState(response?.message ?? "Error"));
         return;
@@ -78,4 +70,37 @@ class ProfileViewModel extends Cubit<ProfileStates> {
       emit(ProfileErrorState(e.toString()));
     }
   }
+
+  void deleteProfile() async {
+  emit(ProfileLoadingState());
+  try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+
+    if (token == null || token.isEmpty) {
+      emit(ProfileErrorState("Token not found"));
+      return;
+    }
+
+    var response = await ApiManager.deleteProfile(token: token);
+
+    if (response == null) {
+      emit(ProfileErrorState("No response from server"));
+      return;
+    }
+
+    if (response.message != "Profile deleted successfully") {
+      emit(ProfileErrorState(response.message ?? "Error"));
+      return;
+    }
+
+    // ✅ remove token from shared preferences
+    await pref.remove('token');
+
+    emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
+  } catch (e) {
+    emit(ProfileErrorState(e.toString()));
+  }
+}
+
 }

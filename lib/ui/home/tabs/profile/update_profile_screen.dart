@@ -4,6 +4,7 @@ import 'package:movies_app/ui/home/tabs/profile/bloc/profile_states.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_resources.dart';
+import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
 import 'package:movies_app/widgets/custom_button.dart';
@@ -18,6 +19,8 @@ class UpdateProfileScreen extends StatefulWidget {
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   late ProfileViewModel profileViewModel;
+
+  bool isDeleted = false;
 
   @override
   void initState() {
@@ -46,7 +49,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             context: context,
             message: state.successMessage,
             posActionName: "OK",
-            posAction: () => Navigator.pop(context),
+            posAction: () {
+              isDeleted
+                  ? Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.login,
+                      (result) => false,
+                    )
+                  : Navigator.pop(context);
+            },
           );
         } else if (state is ProfileErrorState) {
           DialogUtils.hideLoading(context: context);
@@ -179,8 +190,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 Row(
                   children: [
                     TextButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       child: Text(
                         "Reset Password",
                         style: AppStyles.regular20white,
@@ -190,7 +200,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
                 const Spacer(),
                 CustomButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    isDeleted = true;
+                    profileViewModel.deleteProfile();
+                  },
                   text: "Delete Account",
                   textStyle: AppStyles.regular20white,
                   backgroundColor: AppColors.red,
@@ -199,6 +212,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 SizedBox(height: height * 0.02),
                 CustomButton(
                   onPressed: () {
+                    isDeleted = false;
                     profileViewModel.updateProfile();
                   },
                   text: "Update data",

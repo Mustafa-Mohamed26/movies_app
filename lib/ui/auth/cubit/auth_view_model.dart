@@ -9,15 +9,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthViewModel extends Cubit<AuthStates> {
   AuthViewModel() : super(AuthInitialState());
   // controllers
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController(text: "mustafa");
 
   TextEditingController emailController = TextEditingController(text: "mustafa1234@gmail.com");
 
   TextEditingController passwordController = TextEditingController(text: "esayhya73M@");
 
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController(text: "esayhya73M@");
 
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController phoneController = TextEditingController(text: "+201234567899");
 
   int? avaterId;
 
@@ -71,6 +71,7 @@ class AuthViewModel extends Cubit<AuthStates> {
         if (response?.message == "Success Login") {
           // save token in shared preferences
           SharedPreferences pref = await SharedPreferences.getInstance();
+          await pref.clear();
           await pref.setString('token', response?.token ?? '');
           emit(
             AuthSuccessState(
