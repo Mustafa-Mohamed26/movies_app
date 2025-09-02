@@ -7,6 +7,7 @@ import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_constants.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_card.dart';
@@ -24,39 +25,13 @@ class _HomeTabState extends State<HomeTab> {
 
   int currentIndex = 0;
   String selectedGenre = "Action";
-
-  // 👇 list of genres
-  final List<String> genres = [
-    "Action",
-    "Adventure",
-    "Animation",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Documentary",
-    "Drama",
-    "Family",
-    "Fantasy",
-    "Film-Noir",
-    "History",
-    "Horror",
-    "Music",
-    "Musical",
-    "Mystery",
-    "Romance",
-    "Sci-Fi",
-    "Sport",
-    "Thriller",
-    "War",
-    "Western",
-  ];
-
   @override
   void initState() {
     super.initState();
 
     // ✅ every time we open the home tab we get a random genre
-    selectedGenre = genres[Random().nextInt(genres.length)];
+    selectedGenre =
+        AppConstants.genres[Random().nextInt(AppConstants.genres.length)];
 
     allMoviesViewModel.loadMoviesList(limit: 50, page: 1); // all movies
     genreMoviesViewModel.loadMoviesList(
@@ -147,7 +122,6 @@ class _HomeTabState extends State<HomeTab> {
                               image: movie.largeCoverImage ?? "",
                               rate: movie.rating ?? 0.0,
                               onTap: () {
-                                // TODO: navigate to movie details
                                 Navigator.pushNamed(
                                   context,
                                   AppRoutes.details,
@@ -215,7 +189,6 @@ class _HomeTabState extends State<HomeTab> {
                                             "",
                                         rate: genreMovies[index].rating ?? 0.0,
                                         onTap: () {
-                                          //TODO: go to details screen
                                           Navigator.pushNamed(
                                             context,
                                             AppRoutes.details,

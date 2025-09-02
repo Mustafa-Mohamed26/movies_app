@@ -9,6 +9,7 @@ import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_resources.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
+import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_switch.dart';
@@ -30,6 +31,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isRePasswordVisible = false;
 
   bool isEnglish = true;
+
+  @override
+  void initState() {
+    authViewModel.avaterId = 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,10 +100,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           viewportFraction: 0.33,
                           enlargeStrategy: CenterPageEnlargeStrategy.scale,
                           enlargeFactor: 0.35,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              authViewModel.avaterId = index;
+                            });
+                          },
                         ),
                         items: AppResources.avatarList.map((avatarPath) {
-                          authViewModel.avaterId = AppResources.avatarList
-                              .indexOf(avatarPath);
                           return Builder(
                             builder: (BuildContext context) {
                               return Container(
@@ -153,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       // Validate the email input
                       // Check if the email is empty or not valid
-                      validate: (text) => authViewModel.emailValidator(text),
+                      validate: (text) => AppValidators.emailValidator(text),
                     ),
                     SizedBox(height: height * 0.02),
 
@@ -191,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       // Validate the password input
                       // Check if the password is empty or less than 6 characters
-                      validate: (text) => authViewModel.passwordValidator(text),
+                      validate: (text) => AppValidators.passwordValidator(text),
                     ),
 
                     SizedBox(height: height * 0.02),
@@ -225,7 +235,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                       ),
                       validate: (text) =>
-                          authViewModel.confirmPasswordValidator(text),
+                          AppValidators.confirmPasswordValidator(
+                            text,
+                            authViewModel.passwordController.text,
+                          ),
                     ),
                     SizedBox(height: height * 0.02),
 
@@ -242,7 +255,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: AppColors.white,
                       ),
                       hintText: "Phone Number",
-                      validate: (text) => authViewModel.phoneValidator(text),
+                      validate: (text) => AppValidators.phoneValidator(text),
                     ),
                     SizedBox(height: height * 0.02),
 
