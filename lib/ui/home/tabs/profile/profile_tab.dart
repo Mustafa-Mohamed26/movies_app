@@ -164,6 +164,7 @@ class _ProfileTabState extends State<ProfileTab>
               ),
             ),
             SizedBox(height: height * 0.01),
+            
             // Tab Bar for WatchList and History using a manual TabController
             TabBar(
               dividerHeight: 0,

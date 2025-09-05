@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/api/api_manager.dart';
+import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailsViewModel extends Cubit<DetailsStates> {
@@ -59,6 +61,84 @@ class DetailsViewModel extends Cubit<DetailsStates> {
       }
     } catch (e) {
       debugPrint("Launch error: $e");
+    }
+  }
+
+  void addToFavorites({required Movie movie}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString('token');
+      var response = await ApiManager.addFavorite(
+        token: token,
+        movieId: movie.id?.toString() ?? "0",
+        name: movie.title ?? "",
+        rating: movie.rating ?? 0.0,
+        imageURL: movie.largeCoverImage ?? "",
+        year: movie.year?.toString() ?? "0",
+      );
+
+      if (response?.message != "Added to favourite successfully") {
+        emit(DetailsErrorState(errorMessage: response?.message ?? "Error"));
+        return;
+      }
+      emit(
+        (state is DetailsSuccessState
+                ? (state as DetailsSuccessState)
+                : DetailsSuccessState())
+            .copyWith(
+              successMessage: response?.message ?? "Success",
+              isFavorite: true,
+            ),
+      );
+    } catch (e) {
+      emit(DetailsErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  void deleteFromFavorites({required int movieId}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString('token');
+      var response = await ApiManager.deleteFavorite(
+        token: token,
+        movieId: movieId.toString(),
+      );
+
+      if (response?.message != "Removed from favourite successfully") {
+        emit(DetailsErrorState(errorMessage: response?.message ?? "Error"));
+        return;
+      }
+      emit(
+        (state is DetailsSuccessState
+                ? (state as DetailsSuccessState)
+                : DetailsSuccessState())
+            .copyWith(
+              successMessage: response?.message ?? "Success",
+              isFavorite: false,
+            ),
+      );
+    } catch (e) {
+      emit(DetailsErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  void isFavorite({required int movieId}) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString('token');
+      var response = await ApiManager.isFavorite(
+        token: token,
+        movieId: movieId.toString(),
+      );
+
+      emit(
+        (state is DetailsSuccessState
+                ? (state as DetailsSuccessState)
+                : DetailsSuccessState())
+            .copyWith(isFavorite: response?.status ?? false),
+      );
+    } catch (e) {
+      emit(DetailsErrorState(errorMessage: e.toString()));
     }
   }
 }

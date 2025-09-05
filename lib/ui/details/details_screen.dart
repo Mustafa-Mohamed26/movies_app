@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
 import 'package:movies_app/ui/details/cubit/details_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -28,11 +29,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void initState() {
     super.initState();
     int movieId = widget.movieId;
+    detailsViewModel.isFavorite(movieId: movieId);
     detailsViewModel.loadDetailsMovie(
       movieId: movieId,
       withCast: true,
       withImages: true,
     );
+    
     suggestionsViewModel.loadMovieSuggestions(movieId: movieId);
   }
 
@@ -102,8 +105,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset(AppAssets.saveIcon),
+                                  onPressed: () {
+                                    if (state.isFavorite ?? false) {
+                                      detailsViewModel.deleteFromFavorites(
+                                        movieId: widget.movieId,
+                                      );
+                                    } else {
+                                      detailsViewModel.addToFavorites(
+                                        movie: Movie(
+                                          id: widget.movieId,
+                                          title: state.movie!.title,
+                                          rating: state.movie!.rating,
+                                          largeCoverImage:
+                                              state.movie!.largeCoverImage,
+                                          year: state.movie!.year,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: state.isFavorite ?? false
+                                        ? Colors.yellow
+                                        : Colors.white,
+                                        size: 35,
+                                  ),
                                 ),
                               ],
                             ),

@@ -1,0 +1,85 @@
+// https://route-movie-apis.vercel.app/ => base url 
+
+// favorites/add => end point post
+
+// request
+{
+    "movieId": "71130",
+    "name": "Wake the Dead",
+    "rating": 2.4,
+    "imageURL": "https://yts.mx/assets/images/movies/wake_the_dead_2017/large-cover.jpg",
+    "year": "2002"
+}
+
+{
+    "movieId": "71127",
+    "name": "Capps Crossing",
+    "rating": 2.4,
+    "imageURL": "https://yts.mx/assets/images/movies/wake_the_dead_2017/large-cover.jpg",
+    "year": "2002"
+}
+
+// response
+{
+    "message": "Added to favourite successfully",
+    "data": {
+        "movieId": "71130",
+        "name": "Wake the Dead",
+        "rating": 2.4,
+        "imageURL": "https://yts.mx/assets/images/movies/wake_the_dead_2017/large-cover.jpg",
+        "year": "2002"
+    }
+}
+
+{
+    "statusCode": 409,
+    "message": "Movie already added to favourite"
+}
+
+//================================================================================================================
+
+// favorites/all => end point get
+
+// response
+{
+    "message": "favourites fetched successfully",
+    "data": [
+        {
+            "movieId": "71130",
+            "name": "Wake the Dead",
+            "rating": 2.4,
+            "imageURL": "https://yts.mx/assets/images/movies/wake_the_dead_2017/large-cover.jpg",
+            "year": "2002"
+        }
+    ]
+}
+
+//================================================================================================================
+
+// favorites/remove/movieId => end point delete
+// parameter movieId
+
+// response
+{
+    "message": "Removed from favourite successfully"
+}
+
+{
+    "statusCode": 404,
+    "message": "Movie is not added to favourite"
+}
+
+//================================================================================================================
+
+// favorites/is-favorite/movieId => end point get get
+
+// response
+{
+    "message": "Favourite status fetched successfully",
+    "data": false
+}
+
+{
+    "message": "Favourite status fetched successfully",
+    "data": true
+}
