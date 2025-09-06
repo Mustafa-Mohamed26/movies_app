@@ -146,7 +146,9 @@ class ApiManager {
     required String imageURL,
     required String year,
   }) async {
-    Uri url = Uri.parse("https://${ApiConstants.baseUrl}${EndPoints.addFavoriteApi}");
+    Uri url = Uri.parse(
+      "https://${ApiConstants.baseUrl}${EndPoints.addFavoriteApi}",
+    );
     try {
       var response = await http.post(
         url,
@@ -198,6 +200,25 @@ class ApiManager {
     Uri url = Uri.parse(
       "https://${ApiConstants.baseUrl}${EndPoints.isFavoriteApi}/$movieId",
     );
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      var json = jsonDecode(response.body);
+      return FavoriteResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<FavoriteResponse?> getAllFavorites({
+    required String? token,
+  }) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.allFavoritesApi);
     try {
       var response = await http.get(
         url,

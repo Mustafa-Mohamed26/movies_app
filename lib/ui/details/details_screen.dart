@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
 import 'package:movies_app/ui/details/cubit/details_view_model.dart';
+import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_routes.dart';
@@ -24,6 +25,7 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   DetailsViewModel detailsViewModel = DetailsViewModel();
   DetailsViewModel suggestionsViewModel = DetailsViewModel();
+  late ProfileViewModel profileViewModel;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
     
     suggestionsViewModel.loadMovieSuggestions(movieId: movieId);
+    profileViewModel = context.read<ProfileViewModel>();
   }
 
   @override
@@ -98,6 +101,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 IconButton(
                                   onPressed: () {
                                     Navigator.pop(context);
+                                    profileViewModel.getAllFavorites();
                                   },
                                   icon: const Icon(
                                     Icons.arrow_back_ios,

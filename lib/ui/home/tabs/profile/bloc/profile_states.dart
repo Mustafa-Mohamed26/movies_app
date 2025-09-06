@@ -1,3 +1,4 @@
+import 'package:movies_app/models/favorite_response.dart';
 import 'package:movies_app/models/user_response.dart';
 
 abstract class ProfileStates {}
@@ -12,7 +13,26 @@ class ProfileErrorState extends ProfileStates {
 }
 
 class ProfileSuccessState extends ProfileStates {
-  User? user;
-  String successMessage;
-  ProfileSuccessState({required this.successMessage, this.user});
+  final User? user;
+  final List<MovieData>? movies;
+  final String? successMessage;
+
+  ProfileSuccessState({
+    this.successMessage,
+    this.user,
+    this.movies,
+  });
+
+  ProfileSuccessState copyWith({
+    User? user,
+    List<MovieData>? movies,
+    String? successMessage,
+  }) {
+    return ProfileSuccessState(
+      user: user ?? this.user,
+      movies: movies ?? this.movies,
+      successMessage: successMessage ?? this.successMessage,
+    );
+  }
 }
+

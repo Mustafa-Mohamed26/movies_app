@@ -47,7 +47,7 @@ class _ProfileResetPasswordScreenState
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: state.successMessage,
+            message: state.successMessage ?? "Success",
             posActionName: "OK",
             posAction: () {
               Navigator.pushNamedAndRemoveUntil(

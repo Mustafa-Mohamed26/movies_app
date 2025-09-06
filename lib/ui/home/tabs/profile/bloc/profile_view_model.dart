@@ -27,133 +27,180 @@ class ProfileViewModel extends Cubit<ProfileStates> {
   int selectedAvatarIndex = 0;
 
   void getProfile() async {
-    try {
-      emit(ProfileLoadingState());
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString('token');
-      var response = await ApiManager.getProfile(token: token ?? '');
-      if (response?.message != "Profile fetched successfully") {
-        emit(ProfileErrorState(response?.message ?? "Error"));
-        return;
-      }
-      if (response?.user == null) {
-        emit(ProfileErrorState("User data is missing"));
-        return;
-      }
-      emit(
-        ProfileSuccessState(
-          successMessage: response?.message ?? "Success",
-          user: response?.user,
-        ),
-      );
-      nameController.text = response?.user?.name ?? '';
-      phoneController.text = response?.user?.phone ?? '';
-      selectedAvatarIndex = response?.user?.avaterId ?? 0;
-    } catch (e) {
-      emit(ProfileErrorState(e.toString()));
-    }
-  }
-
-  void updateProfile() async {
-    if (!(formKey.currentState?.validate() ?? false)) return;
-
+  try {
     emit(ProfileLoadingState());
-
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString('token');
-
-      var response = await ApiManager.updateProfile(
-        token: token ?? '',
-        updateRequest: UpdateRequest(
-          name: nameController.text,
-          phone: phoneController.text,
-          avaterId: selectedAvatarIndex,
-        ),
-      );
-
-      if (response?.message != "Profile updated successfully") {
-        emit(ProfileErrorState(response?.message ?? "Error"));
-        return;
-      }
-
-      emit(ProfileSuccessState(successMessage: response?.message ?? "Success"));
-    } catch (e) {
-      emit(ProfileErrorState(e.toString()));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+    var response = await ApiManager.getProfile(token: token ?? '');
+    if (response?.message != "Profile fetched successfully") {
+      emit(ProfileErrorState(response?.message ?? "Error"));
+      return;
     }
-  }
-
-  void deleteProfile() async {
-    emit(ProfileLoadingState());
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString('token');
-
-      if (token == null || token.isEmpty) {
-        emit(ProfileErrorState("Token not found"));
-        return;
-      }
-
-      var response = await ApiManager.deleteProfile(token: token);
-
-      if (response == null) {
-        emit(ProfileErrorState("No response from server"));
-        return;
-      }
-
-      if (response.message != "Profile deleted successfully") {
-        emit(ProfileErrorState(response.message ?? "Error"));
-        return;
-      }
-
-      // ✅ remove token from shared preferences
-      await pref.remove('token');
-
-      emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
-    } catch (e) {
-      emit(ProfileErrorState(e.toString()));
-    }
-  }
-
-  void resetPassword() async {
-    if (!(resetPasswordFormKey.currentState?.validate() ?? false)) {
+    if (response?.user == null) {
+      emit(ProfileErrorState("User data is missing"));
       return;
     }
 
-    emit(ProfileLoadingState());
+    if (state is ProfileSuccessState) {
+      final currentState = state as ProfileSuccessState;
+      emit(currentState.copyWith(
+        user: response?.user,
+        successMessage: response?.message,
+      ));
+    } else {
+      emit(ProfileSuccessState(
+        successMessage: response?.message,
+        user: response?.user,
+      ));
+    }
+
+    nameController.text = response?.user?.name ?? '';
+    phoneController.text = response?.user?.phone ?? '';
+    selectedAvatarIndex = response?.user?.avaterId ?? 0;
+  } catch (e) {
+    emit(ProfileErrorState(e.toString()));
+  }
+}
+
+
+  void updateProfile() async {
+  if (!(formKey.currentState?.validate() ?? false)) return;
+
+  emit(ProfileLoadingState());
+
+  try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+
+    var response = await ApiManager.updateProfile(
+      token: token ?? '',
+      updateRequest: UpdateRequest(
+        name: nameController.text,
+        phone: phoneController.text,
+        avaterId: selectedAvatarIndex,
+      ),
+    );
+
+    if (response?.message != "Profile updated successfully") {
+      emit(ProfileErrorState(response?.message ?? "Error"));
+      return;
+    }
+
+    if (state is ProfileSuccessState) {
+      final currentState = state as ProfileSuccessState;
+      emit(currentState.copyWith(successMessage: response?.message));
+    } else {
+      emit(ProfileSuccessState(successMessage: response?.message));
+    }
+  } catch (e) {
+    emit(ProfileErrorState(e.toString()));
+  }
+}
+
+void deleteProfile() async {
+  emit(ProfileLoadingState());
+  try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+
+    if (token == null || token.isEmpty) {
+      emit(ProfileErrorState("Token not found"));
+      return;
+    }
+
+    var response = await ApiManager.deleteProfile(token: token);
+
+    if (response == null) {
+      emit(ProfileErrorState("No response from server"));
+      return;
+    }
+
+    if (response.message != "Profile deleted successfully") {
+      emit(ProfileErrorState(response.message ?? "Error"));
+      return;
+    }
+
+    // ✅ remove token from shared preferences
+    await pref.remove('token');
+
+    if (state is ProfileSuccessState) {
+      final currentState = state as ProfileSuccessState;
+      emit(currentState.copyWith(successMessage: response.message));
+    } else {
+      emit(ProfileSuccessState(successMessage: response.message));
+    }
+  } catch (e) {
+    emit(ProfileErrorState(e.toString()));
+  }
+}
+
+void resetPassword() async {
+  if (!(resetPasswordFormKey.currentState?.validate() ?? false)) {
+    return;
+  }
+
+  emit(ProfileLoadingState());
+  try {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString('token');
+
+    if (token == null || token.isEmpty) {
+      emit(ProfileErrorState("User not logged in or token missing"));
+      return;
+    }
+
+    final response = await ApiManager.resetPassword(
+      token: token,
+      oldPassword: oldPasswordController.text.trim(),
+      newPassword: passwordController.text.trim(),
+    );
+
+    if (response == null) {
+      emit(ProfileErrorState("No response from server"));
+      return;
+    }
+
+    if (response.message != "Password updated successfully") {
+      emit(ProfileErrorState(response.message ?? "Error"));
+      return;
+    }
+
+    if (state is ProfileSuccessState) {
+      final currentState = state as ProfileSuccessState;
+      emit(currentState.copyWith(successMessage: response.message));
+    } else {
+      emit(ProfileSuccessState(successMessage: response.message));
+    }
+
+    // Clear the password fields after successful reset
+    oldPasswordController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+  } catch (e) {
+    emit(ProfileErrorState("Error: $e"));
+  }
+}
+
+
+  void getAllFavorites() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString('token');
+      var response = await ApiManager.getAllFavorites(token: token ?? '');
 
-      if (token == null || token.isEmpty) {
-        emit(ProfileErrorState("User not logged in or token missing"));
+      if (response?.movies == null) {
+        emit(ProfileErrorState(response?.message ?? "Error"));
         return;
       }
 
-      final response = await ApiManager.resetPassword(
-        token: token,
-        oldPassword: oldPasswordController.text.trim(),
-        newPassword: passwordController.text.trim(),
-      );
-
-      if (response == null) {
-        emit(ProfileErrorState("No response from server"));
-        return;
+      if (state is ProfileSuccessState) {
+        final currentState = state as ProfileSuccessState;
+        emit(currentState.copyWith(movies: response!.movies));
+      } else {
+        emit(ProfileSuccessState(movies: response!.movies));
       }
-
-      if (response.message != "Password updated successfully") {
-        emit(ProfileErrorState(response.message ?? "Error"));
-        return;
-      }
-
-      emit(ProfileSuccessState(successMessage: response.message ?? "Success"));
-
-      // Clear the password fields after successful reset
-      oldPasswordController.clear();
-      passwordController.clear();
-      confirmPasswordController.clear();
     } catch (e) {
-      emit(ProfileErrorState("Error: $e"));
+      emit(ProfileErrorState(e.toString()));
     }
   }
 }

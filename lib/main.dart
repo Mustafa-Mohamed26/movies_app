@@ -17,7 +17,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     BlocProvider<ProfileViewModel>(
-      create: (_) => ProfileViewModel()..getProfile(),
+      create: (_) => ProfileViewModel()
+        ..getProfile()
+        ..getAllFavorites(),
       child: const MyApp(),
     ),
   );

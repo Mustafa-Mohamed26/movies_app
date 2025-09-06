@@ -9,6 +9,7 @@ class EndPoints {
   static String addFavoriteApi = "/favorites/add";
   static String deleteFavoriteApi = "/favorites/remove";
   static String isFavoriteApi = "/favorites/is-favorite";
+  static String allFavoritesApi = "/favorites/all";
 
   // movies
   static String listMoviesApi = "/api/v2/list_movies.json";

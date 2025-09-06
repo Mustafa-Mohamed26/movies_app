@@ -48,7 +48,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: state.successMessage,
+            message: state.successMessage ?? "Success",
             posActionName: "OK",
             posAction: () {
               if (isDeleted) {
