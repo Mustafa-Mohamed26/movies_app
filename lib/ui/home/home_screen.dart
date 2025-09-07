@@ -14,28 +14,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
+  String? browseGenre; // 👈 نخزن genre اللي جاي من HomeTab
 
-  final List<Widget> pages = [
-    HomeTab(),
-    SearchTab(),
-    BrowseTab(),
-    ProfileTab(),
-  ];
-
-  void onTabSelected(int index) {
+  void onTabSelected(int index, {String? genre}) {
     setState(() {
       currentIndex = index;
+      if (genre != null) {
+        browseGenre = genre; // نخزن genre المختار
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      HomeTab(onSeeMore: (genre) {
+        // 👈 من هنا نغير index ونبعت genre
+        onTabSelected(2, genre: genre);
+      }),
+      const SearchTab(),
+      BrowseTab(selectedGenre: browseGenre), // 👈 نبعت genre
+      const ProfileTab(),
+    ];
+
     return Scaffold(
       body: pages[currentIndex],
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: currentIndex,
-        onTabSelected: onTabSelected,
+        onTabSelected: (i) => onTabSelected(i),
       ),
     );
   }
 }
+

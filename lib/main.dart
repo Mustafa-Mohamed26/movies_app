@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.onboarding1: (context) => OnboardingScreen1(),
         AppRoutes.onboarding2: (context) => OnboardingScreen2(),
         AppRoutes.home: (context) => const HomeScreen(),
+        
         AppRoutes.updateProfile: (context) => const UpdateProfileScreen(),
         AppRoutes.details: (context) {
           final movieId = ModalRoute.of(context)!.settings.arguments as int;

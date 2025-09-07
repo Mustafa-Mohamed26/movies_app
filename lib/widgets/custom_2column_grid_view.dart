@@ -5,12 +5,15 @@ import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/widgets/custom_card.dart';
 
 class Custom2columnGridView extends StatelessWidget {
-  int count;
-  List<Movies> moviesList;
-  Custom2columnGridView({
+  final int count;
+  final List<Movies> moviesList;
+  final ScrollController? controller; // ✅ اضفنا الكنترولر
+
+  const Custom2columnGridView({
     super.key,
     required this.count,
     required this.moviesList,
+    this.controller, // ✅ استقبله هنا
   });
 
   @override
@@ -18,6 +21,7 @@ class Custom2columnGridView extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return GridView.builder(
+      controller: controller, // ✅ مرره للـ GridView
       padding: EdgeInsets.symmetric(
         horizontal: width * 0.05,
         vertical: height * 0.02,
