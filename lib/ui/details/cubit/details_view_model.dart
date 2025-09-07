@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:movies_app/api/api_manager.dart';
+import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -140,5 +142,28 @@ class DetailsViewModel extends Cubit<DetailsStates> {
     } catch (e) {
       emit(DetailsErrorState(errorMessage: e.toString()));
     }
+  }
+
+  Future<void> saveMovie(MovieData movie) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+      String? sId = pref.getString('userId');
+    // box for user
+    var box = await Hive.openBox<MovieData>(sId ?? '');
+
+    // if movie exist
+    final existingKey = box.keys.firstWhere(
+      (key) => box.get(key)?.movieId == movie.movieId,
+      orElse: () => null,
+    );
+
+    // delete old movie
+    if (existingKey != null) {
+      await box.delete(existingKey);
+    }
+
+    // add new movie
+    await box.add(movie);
+
+    await box.close();
   }
 }

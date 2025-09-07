@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
 import 'package:movies_app/ui/details/cubit/details_view_model.dart';
@@ -37,7 +38,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       withCast: true,
       withImages: true,
     );
-    
+
     suggestionsViewModel.loadMovieSuggestions(movieId: movieId);
     profileViewModel = context.read<ProfileViewModel>();
   }
@@ -100,8 +101,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
                                     profileViewModel.getAllFavorites();
+                                    profileViewModel.loadHistory();
+                                    Navigator.pop(context);
                                   },
                                   icon: const Icon(
                                     Icons.arrow_back_ios,
@@ -132,16 +134,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     color: state.isFavorite ?? false
                                         ? Colors.yellow
                                         : Colors.white,
-                                        size: 35,
+                                    size: 35,
                                   ),
                                 ),
                               ],
                             ),
                             IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (state.movie?.url != null) {
                                   detailsViewModel.launchURL(state.movie!.url!);
                                 }
+
+                                final movieToSave = MovieData(
+                                  movieId: state.movie!.id.toString(),
+                                  name: state.movie!.title,
+                                  rating: state.movie!.rating,
+                                  imageURL: state.movie!.largeCoverImage,
+                                  year: state.movie!.year?.toString() ?? "Unknown",
+                                );
+
+                                await detailsViewModel.saveMovie(movieToSave);
                               },
                               icon: Image.asset(AppAssets.playIcon),
                             ),
@@ -169,10 +181,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: [
                         // button and rank section
                         CustomButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (state.movie?.url != null) {
                               detailsViewModel.launchURL(state.movie!.url!);
                             }
+
+                            final movieToSave = MovieData(
+                              movieId: state.movie!.id.toString(),
+                              name: state.movie!.title,
+                              rating: state.movie!.rating,
+                              imageURL: state.movie!.largeCoverImage,
+                              year: state.movie!.year?.toString() ?? "Unknown",
+                            );
+
+                            await detailsViewModel.saveMovie(movieToSave);
                           },
                           text: "Watch",
                           textStyle: AppStyles.bold20white,

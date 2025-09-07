@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/ui/auth/login_screen.dart';
 import 'package:movies_app/ui/auth/register_screen.dart';
@@ -12,14 +14,19 @@ import 'package:movies_app/ui/home/tabs/profile/update_profile_screen.dart';
 import 'package:movies_app/ui/details/details_screen.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_theme.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  Hive.registerAdapter(MovieDataAdapter());
   runApp(
     BlocProvider<ProfileViewModel>(
       create: (_) => ProfileViewModel()
         ..getProfile()
-        ..getAllFavorites(),
+        ..getAllFavorites()
+        ..loadHistory(),
       child: const MyApp(),
     ),
   );

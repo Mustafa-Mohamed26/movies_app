@@ -28,7 +28,6 @@ class _ProfileTabState extends State<ProfileTab>
     super.initState();
     profileViewModel = context.read<ProfileViewModel>();
     profileViewModel.getProfile();
-    profileViewModel.getAllFavorites();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -95,7 +94,10 @@ class _ProfileTabState extends State<ProfileTab>
                           Expanded(
                             child: Column(
                               children: [
-                                Text("${state.movies?.length ?? 0}", style: AppStyles.bold36white),
+                                Text(
+                                  "${state.movies?.length ?? 0}",
+                                  style: AppStyles.bold36white,
+                                ),
                                 Text("WishList", style: AppStyles.bold24white),
                               ],
                             ),
@@ -103,7 +105,7 @@ class _ProfileTabState extends State<ProfileTab>
                           Expanded(
                             child: Column(
                               children: [
-                                Text("20", style: AppStyles.bold36white),
+                                Text("${state.historyMovies?.length ?? 0}", style: AppStyles.bold36white),
                                 Text("History", style: AppStyles.bold24white),
                               ],
                             ),
@@ -201,9 +203,12 @@ class _ProfileTabState extends State<ProfileTab>
                               color: AppColors.black,
                             ),
                             child: Center(
-                              child: state.movies?.isEmpty ?? true? 
-                              Image.asset(AppAssets.emptyListIcon):
-                              Custom3columnGridView(count: state.movies?.length ?? 0, movies: state.movies ?? []),
+                              child: state.movies?.isEmpty ?? true
+                                  ? Image.asset(AppAssets.emptyListIcon)
+                                  : Custom3columnGridView(
+                                      count: state.movies?.length ?? 0,
+                                      movies: state.movies ?? [],
+                                    ),
                             ),
                           ),
                           Container(
@@ -214,7 +219,12 @@ class _ProfileTabState extends State<ProfileTab>
                               color: AppColors.black,
                             ),
                             child: Center(
-                              child: Image.asset(AppAssets.emptyListIcon),
+                              child: state.movies?.isEmpty ?? true
+                                  ? Image.asset(AppAssets.emptyListIcon)
+                                  : Custom3columnGridView(
+                                      count: state.historyMovies?.length ?? 0,
+                                      movies: state.historyMovies ?? [],
+                                    ),
                             ),
                           ),
                         ],

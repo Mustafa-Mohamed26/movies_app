@@ -1,3 +1,5 @@
+import 'package:movies_app/models/movie_data.dart';
+
 class FavoriteResponse {
   String? message;
   bool? status; // for is-favorite
@@ -21,30 +23,4 @@ class FavoriteResponse {
   }
 }
 
-class MovieData {
-  String? movieId;
-  String? name;
-  double? rating;
-  String? imageURL;
-  String? year;
 
-  MovieData({this.movieId, this.name, this.rating, this.imageURL, this.year});
-
-  MovieData.fromJson(Map<String, dynamic> json) {
-    movieId = json['movieId']?.toString();
-    name = json['name']?.toString();
-    rating = (json['rating'] is num) ? (json['rating'] as num).toDouble() : null;
-    imageURL = json['imageURL']?.toString();
-    year = json['year']?.toString();
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'movieId': movieId,
-      'name': name,
-      'rating': rating,
-      'imageURL': imageURL,
-      'year': year,
-    };
-  }
-}
