@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/models/favorite_response.dart';
-import 'package:movies_app/models/list_of_movies_response.dart';
 import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_routes.dart';

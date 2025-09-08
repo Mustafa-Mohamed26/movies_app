@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/utils/app_assets.dart';
 
 class CustomScreenShot extends StatelessWidget {
   String image;
@@ -8,7 +7,6 @@ class CustomScreenShot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
     return Container(
       height: height * 0.15,
       decoration: BoxDecoration(

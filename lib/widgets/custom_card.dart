@@ -20,8 +20,8 @@ class CustomCard extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(20), // تأثير Ripple مع انحناء
-      onTap: onTap, // ✅ استدعاء الدالة عند الضغط
+      borderRadius: BorderRadius.circular(20), 
+      onTap: onTap, 
       child: Container(
         width: width * 0.55,
         height: height * 0.35,
@@ -29,7 +29,7 @@ class CustomCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2), // ظل خفيف
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -39,21 +39,21 @@ class CustomCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              // الصورة
+             
               Positioned.fill(
                 child: CachedNetworkImage(
                   imageUrl: image,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.yellow, // أو أي لون مناسب
+                      color: Colors.yellow, 
                     ),
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error, color: Colors.red),
                 ),
               ),
 
-              // Gradient خفيف فوق الصورة
+              
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -69,7 +69,6 @@ class CustomCard extends StatelessWidget {
                 ),
               ),
 
-              // التقييم
               Positioned(
                 top: 10,
                 left: 10,
