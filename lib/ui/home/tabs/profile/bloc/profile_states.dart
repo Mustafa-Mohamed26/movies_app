@@ -1,3 +1,4 @@
+import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/models/user_response.dart';
 
 abstract class ProfileStates {}
@@ -12,7 +13,30 @@ class ProfileErrorState extends ProfileStates {
 }
 
 class ProfileSuccessState extends ProfileStates {
-  User? user;
-  String successMessage;
-  ProfileSuccessState({required this.successMessage, this.user});
+  final User? user;
+  final List<MovieData>? movies;
+  final List<MovieData>? historyMovies; // History
+  final String? successMessage;
+
+  ProfileSuccessState({
+    this.successMessage,
+    this.user,
+    this.movies,
+    this.historyMovies,
+  });
+
+  ProfileSuccessState copyWith({
+    User? user,
+    List<MovieData>? movies,
+    List<MovieData>? historyMovies,
+    String? successMessage,
+  }) {
+    return ProfileSuccessState(
+      user: user ?? this.user,
+      movies: movies ?? this.movies,
+      successMessage: successMessage ?? this.successMessage,
+      historyMovies: historyMovies ?? this.historyMovies,
+    );
+  }
 }
+

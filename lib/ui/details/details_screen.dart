@@ -1,10 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
+import 'package:movies_app/models/movie_data.dart';
+import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
 import 'package:movies_app/ui/details/cubit/details_view_model.dart';
+import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_constants.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_button.dart';
@@ -23,29 +28,37 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   DetailsViewModel detailsViewModel = DetailsViewModel();
   DetailsViewModel suggestionsViewModel = DetailsViewModel();
+  late ProfileViewModel profileViewModel;
 
   @override
   void initState() {
     super.initState();
     int movieId = widget.movieId;
+    detailsViewModel.isFavorite(movieId: movieId);
     detailsViewModel.loadDetailsMovie(
+      context: context,
       movieId: movieId,
       withCast: true,
       withImages: true,
     );
-    suggestionsViewModel.loadMovieSuggestions(movieId: movieId);
+
+    suggestionsViewModel.loadMovieSuggestions(
+      movieId: movieId,
+      context: context,
+    );
+    profileViewModel = context.read<ProfileViewModel>();
   }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: BlocBuilder<DetailsViewModel, DetailsStates>(
           bloc: detailsViewModel,
           builder: (context, state) {
+            // loading state
             if (state is DetailsErrorState) {
               return Center(
                 child: Text(
@@ -54,6 +67,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
               );
             }
+
+            // success state
             if (state is DetailsSuccessState) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,8 +107,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                // back button
                                 IconButton(
                                   onPressed: () {
+                                    profileViewModel.getAllFavorites(context: context);
+                                    profileViewModel.loadHistory();
                                     Navigator.pop(context);
                                   },
                                   icon: const Icon(
@@ -101,20 +119,68 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     color: Colors.white,
                                   ),
                                 ),
+
+                                // favorite button
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: Image.asset(AppAssets.saveIcon),
+                                  onPressed: () {
+                                    if (state.isFavorite ?? false) {
+                                      detailsViewModel.deleteFromFavorites(
+                                        movieId: widget.movieId,
+                                        context: context,
+                                      );
+                                    } else {
+                                      detailsViewModel.addToFavorites(
+                                        context: context,
+                                        movie: Movie(
+                                          id: widget.movieId,
+                                          title: state.movie!.title,
+                                          rating: state.movie!.rating,
+                                          largeCoverImage:
+                                              state.movie!.largeCoverImage,
+                                          year: state.movie!.year,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: state.isFavorite ?? false
+                                        ? Colors.yellow
+                                        : Colors.white,
+                                    size: 35,
+                                  ),
                                 ),
                               ],
                             ),
+
+                            // play button
                             IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (state.movie?.url != null) {
-                                  detailsViewModel.launchURL(state.movie!.url!);
+                                  detailsViewModel.launchURL(
+                                    state.movie!.url!,
+                                    context,
+                                  );
                                 }
+
+                                final movieToSave = MovieData(
+                                  movieId: state.movie!.id.toString(),
+                                  name: state.movie!.title,
+                                  rating: state.movie!.rating,
+                                  imageURL: state.movie!.largeCoverImage,
+                                  year:
+                                      state.movie!.year?.toString() ??
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.details_unKnown,
+                                );
+
+                                await detailsViewModel.saveMovie(movieToSave);
                               },
                               icon: Image.asset(AppAssets.playIcon),
                             ),
+
+                            // title and year
                             Column(
                               children: [
                                 Text(
@@ -139,12 +205,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: [
                         // button and rank section
                         CustomButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (state.movie?.url != null) {
-                              detailsViewModel.launchURL(state.movie!.url!);
+                              detailsViewModel.launchURL(
+                                state.movie!.url!,
+                                context,
+                              );
                             }
+
+                            final movieToSave = MovieData(
+                              movieId: state.movie!.id.toString(),
+                              name: state.movie!.title,
+                              rating: state.movie!.rating,
+                              imageURL: state.movie!.largeCoverImage,
+                              year:
+                                  state.movie!.year?.toString() ??
+                                  AppLocalizations.of(context)!.details_unKnown,
+                            );
+
+                            await detailsViewModel.saveMovie(movieToSave);
                           },
-                          text: "Watch",
+                          text: AppLocalizations.of(
+                            context,
+                          )!.details_screen_watch,
                           textStyle: AppStyles.bold20white,
                           backgroundColor: AppColors.red,
                           borderColorSide: AppColors.red,
@@ -169,7 +252,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         // screen short section
                         SizedBox(height: height * 0.02),
-                        Text("Screen Shots", style: AppStyles.bold20white),
+                        Text(
+                          AppLocalizations.of(context)!.details_screen_shots,
+                          style: AppStyles.bold20white,
+                        ),
                         SizedBox(height: height * 0.01),
                         CustomScreenShot(
                           image: state.movie?.largeScreenshotImage1 ?? "",
@@ -185,7 +271,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
                         // similar section
                         SizedBox(height: height * 0.02),
-                        Text("Similar", style: AppStyles.bold20white),
+                        Text(
+                          AppLocalizations.of(context)!.details_screen_Similar,
+                          style: AppStyles.bold20white,
+                        ),
                         SizedBox(height: height * 0.01),
 
                         BlocBuilder<DetailsViewModel, DetailsStates>(
@@ -246,16 +335,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
                         // summary section
                         SizedBox(height: height * 0.02),
-                        Text("Summary", style: AppStyles.bold20white),
+                        Text(
+                          AppLocalizations.of(context)!.details_screen_summary,
+                          style: AppStyles.bold20white,
+                        ),
                         SizedBox(height: height * 0.01),
                         Text(
-                          state.movie?.descriptionIntro ?? "No description",
+                          state.movie?.descriptionIntro ??
+                              AppLocalizations.of(
+                                context,
+                              )!.details_screen_no_description,
                           style: AppStyles.regular16white,
                         ),
 
                         // cast section
                         SizedBox(height: height * 0.02),
-                        Text("Cast", style: AppStyles.bold20white),
+                        Text(
+                          AppLocalizations.of(context)!.details_screen_cast,
+                          style: AppStyles.bold20white,
+                        ),
                         SizedBox(height: height * 0.01),
                         ListView.builder(
                           padding: EdgeInsets.zero,
@@ -313,7 +411,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
                         // Genres section
                         SizedBox(height: height * 0.02),
-                        Text("Genres", style: AppStyles.bold20white),
+                        Text(
+                          AppLocalizations.of(context)!.details_screen_genres,
+                          style: AppStyles.bold20white,
+                        ),
                         SizedBox(height: height * 0.01),
                         GridView.builder(
                           padding: EdgeInsets.zero,
@@ -330,7 +431,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           itemBuilder: (context, index) {
                             return Center(
                               child: CustomRank(
-                                rank: state.movie?.genres?[index] ?? "",
+                                rank: AppConstants.getLocalizedGenre(
+                                  context,
+                                  state.movie?.genres?[index] ?? "",
+                                ),
                                 textStyle: AppStyles.regular12white,
                               ),
                             );

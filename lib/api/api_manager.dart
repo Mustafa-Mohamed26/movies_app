@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:movies_app/api/api_constants.dart';
 import 'package:movies_app/api/end_points.dart';
+import 'package:movies_app/models/favorite_response.dart';
 import 'package:movies_app/models/list_of_movies_response.dart';
 import 'package:movies_app/models/login_request.dart';
 import 'package:movies_app/models/login_response.dart';
@@ -132,6 +133,102 @@ class ApiManager {
       var responseBody = response.body;
       var json = jsonDecode(responseBody);
       return UpdateResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<FavoriteResponse?> addFavorite({
+    required String? token,
+    required String movieId,
+    required String name,
+    required double rating,
+    required String imageURL,
+    required String year,
+  }) async {
+    Uri url = Uri.parse(
+      "https://${ApiConstants.baseUrl}${EndPoints.addFavoriteApi}",
+    );
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "movieId": movieId,
+          "name": name,
+          "rating": rating,
+          "imageURL": imageURL,
+          "year": year,
+        }),
+      );
+      var json = jsonDecode(response.body);
+      return FavoriteResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<FavoriteResponse?> deleteFavorite({
+    required String? token,
+    required String movieId,
+  }) async {
+    Uri url = Uri.parse(
+      "https://${ApiConstants.baseUrl}${EndPoints.deleteFavoriteApi}/$movieId",
+    );
+    try {
+      var response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      var json = jsonDecode(response.body);
+      return FavoriteResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<FavoriteResponse?> isFavorite({
+    required String? token,
+    required String movieId,
+  }) async {
+    Uri url = Uri.parse(
+      "https://${ApiConstants.baseUrl}${EndPoints.isFavoriteApi}/$movieId",
+    );
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      var json = jsonDecode(response.body);
+      return FavoriteResponse.fromJson(json);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<FavoriteResponse?> getAllFavorites({
+    required String? token,
+  }) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, EndPoints.allFavoritesApi);
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      var json = jsonDecode(response.body);
+      return FavoriteResponse.fromJson(json);
     } catch (e) {
       throw Exception(e);
     }

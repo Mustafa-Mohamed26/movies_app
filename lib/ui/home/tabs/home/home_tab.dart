@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -13,7 +14,9 @@ import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_card.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+  final Function(String genre)? onSeeMore; // callback function
+
+  const HomeTab({super.key, this.onSeeMore});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -25,18 +28,19 @@ class _HomeTabState extends State<HomeTab> {
 
   int currentIndex = 0;
   String selectedGenre = "Action";
+
   @override
   void initState() {
     super.initState();
 
-    // ✅ every time we open the home tab we get a random genre
+    // ✅ random genre once when HomeTab opens
     selectedGenre =
         AppConstants.genres[Random().nextInt(AppConstants.genres.length)];
 
-    allMoviesViewModel.loadMoviesList(limit: 50, page: 1); // all movies
+    allMoviesViewModel.loadMoviesList(limit: 20, page: 1); // all movies
     genreMoviesViewModel.loadMoviesList(
       genre: selectedGenre,
-      limit: 50,
+      limit: 20,
       page: 1,
     ); // genre movies
   }
@@ -105,7 +109,7 @@ class _HomeTabState extends State<HomeTab> {
                         Image.asset(AppAssets.availableNow),
                         SizedBox(height: height * 0.02),
 
-                        // ✅ Carousel for All Movies
+                        // ✅ Carousel for All Movies with pagination
                         CarouselSlider(
                           options: CarouselOptions(
                             enlargeCenterPage: true,
@@ -115,6 +119,16 @@ class _HomeTabState extends State<HomeTab> {
                             enlargeFactor: 0.35,
                             onPageChanged: (index, reason) {
                               setState(() => currentIndex = index);
+
+                              // ✅ pagination trigger for all movies
+                              if (index >= movies.length - 3 &&
+                                  !allMoviesViewModel.isLoadingMore) {
+                                allMoviesViewModel.loadMoviesList(
+                                  limit: 20,
+                                  page: allMoviesViewModel.currentPage,
+                                  isLoadMore: true,
+                                );
+                              }
                             },
                           ),
                           items: movies.map((movie) {
@@ -132,6 +146,14 @@ class _HomeTabState extends State<HomeTab> {
                           }).toList(),
                         ),
 
+                        if (allMoviesViewModel.isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          ),
+
                         SizedBox(height: height * 0.02),
                         Image.asset(AppAssets.watchNow),
                         SizedBox(height: height * 0.02),
@@ -143,19 +165,29 @@ class _HomeTabState extends State<HomeTab> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                selectedGenre,
+                                AppConstants.getLocalizedGenre(context, selectedGenre),
                                 style: AppStyles.regular16white,
                               ),
                               Row(
                                 children: [
-                                  Text(
-                                    "See More",
-                                    style: AppStyles.regular16yellow,
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: AppColors.yellow,
-                                    size: 15,
+                                  GestureDetector(
+                                    onTap: () {
+                                      // get genre and call onSeeMore
+                                      widget.onSeeMore?.call(selectedGenre);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.see_more,
+                                          style: AppStyles.regular16yellow,
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward,
+                                          color: AppColors.yellow,
+                                          size: 15,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -163,7 +195,7 @@ class _HomeTabState extends State<HomeTab> {
                           ),
                         ),
 
-                        // ✅ BlocBuilder for Random Genre Movies
+                        // ✅ Genre Movies with pagination
                         BlocBuilder<MovieListViewModel, MovieListStates>(
                           bloc: genreMoviesViewModel,
                           builder: (context, genreState) {
@@ -171,33 +203,50 @@ class _HomeTabState extends State<HomeTab> {
                               var genreMovies = genreState.moviesList;
                               return SizedBox(
                                 height: height * 0.22,
-                                child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  itemCount: genreMovies.length,
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(width: width * 0.03),
-                                  itemBuilder: (context, index) {
-                                    return AspectRatio(
-                                      aspectRatio: 2 / 3,
-                                      child: CustomCard(
-                                        image:
-                                            genreMovies[index]
-                                                .largeCoverImage ??
-                                            "",
-                                        rate: genreMovies[index].rating ?? 0.0,
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            AppRoutes.details,
-                                            arguments: genreMovies[index].id,
-                                          );
-                                        },
-                                      ),
-                                    );
+                                child: NotificationListener<ScrollNotification>(
+                                  onNotification: (scrollInfo) {
+                                    if (scrollInfo.metrics.pixels >=
+                                            scrollInfo.metrics.maxScrollExtent -
+                                                100 &&
+                                        !genreMoviesViewModel.isLoadingMore) {
+                                      genreMoviesViewModel.loadMoviesList(
+                                        genre: selectedGenre,
+                                        limit: 20,
+                                        page: genreMoviesViewModel.currentPage,
+                                        isLoadMore: true,
+                                      );
+                                    }
+                                    return false;
                                   },
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    itemCount: genreMovies.length,
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(width: width * 0.03),
+                                    itemBuilder: (context, index) {
+                                      return AspectRatio(
+                                        aspectRatio: 2 / 3,
+                                        child: CustomCard(
+                                          image:
+                                              genreMovies[index]
+                                                  .largeCoverImage ??
+                                              "",
+                                          rate:
+                                              genreMovies[index].rating ?? 0.0,
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              AppRoutes.details,
+                                              arguments: genreMovies[index].id,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               );
                             }
@@ -214,6 +263,14 @@ class _HomeTabState extends State<HomeTab> {
                             );
                           },
                         ),
+
+                        if (genreMoviesViewModel.isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              color: AppColors.yellow,
+                            ),
+                          ),
 
                         SizedBox(height: height * 0.03),
                       ],

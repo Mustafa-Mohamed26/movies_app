@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_states.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_colors.dart';
@@ -32,7 +33,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void dispose() {
     super.dispose();
-    profileViewModel.getProfile();
+    profileViewModel.getProfile(context: context);
   }
 
   @override
@@ -43,13 +44,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return BlocListener<ProfileViewModel, ProfileStates>(
       listener: (context, state) {
         if (state is ProfileLoadingState) {
-          DialogUtils.showLoading(context: context, loadingText: "Loading...");
+          DialogUtils.showLoading(
+            context: context,
+            loadingText: AppLocalizations.of(context)!.loading,
+          );
         } else if (state is ProfileSuccessState) {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: state.successMessage,
-            posActionName: "OK",
+            message:
+                state.successMessage ?? AppLocalizations.of(context)!.success,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () {
               if (isDeleted) {
                 Navigator.pushNamedAndRemoveUntil(
@@ -67,14 +72,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           DialogUtils.showMessage(
             context: context,
             message: state.errorMessage,
-            title: "Error",
-            posActionName: "Ok",
+            title: AppLocalizations.of(context)!.error,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () => Navigator.pop(context),
           );
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text("Pick avatar")),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.pick_avatar)),
         body: Form(
           key: profileViewModel.formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -173,7 +178,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     size: 30,
                     color: AppColors.white,
                   ),
-                  hintText: "Name",
+                  hintText: AppLocalizations.of(context)!.name,
                 ),
                 SizedBox(height: height * 0.02),
                 // CustomTextField for phone number input
@@ -188,8 +193,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     size: 30,
                     color: AppColors.white,
                   ),
-                  hintText: "Phone Number",
-                  validate: AppValidators.phoneValidator,
+                  hintText: AppLocalizations.of(context)!.phone_number,
+                  validate: (text) =>
+                      AppValidators.phoneValidator(text, context),
                 ),
                 SizedBox(height: height * 0.02),
                 Row(
@@ -199,7 +205,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         Navigator.pushNamed(context, AppRoutes.resetPassword);
                       },
                       child: Text(
-                        "Reset Password",
+                        AppLocalizations.of(context)!.reset_password,
                         style: AppStyles.regular20white,
                       ),
                     ),
@@ -209,9 +215,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 CustomButton(
                   onPressed: () {
                     isDeleted = true;
-                    profileViewModel.deleteProfile();
+                    profileViewModel.deleteProfile(context: context);
                   },
-                  text: "Delete Account",
+                  text: AppLocalizations.of(context)!.delete_account,
                   textStyle: AppStyles.regular20white,
                   backgroundColor: AppColors.red,
                   borderColorSide: AppColors.red,
@@ -220,9 +226,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 CustomButton(
                   onPressed: () {
                     isDeleted = false;
-                    profileViewModel.updateProfile();
+                    profileViewModel.updateProfile(context: context);
                   },
-                  text: "Update data",
+                  text: AppLocalizations.of(context)!.update_data,
                   textStyle: AppStyles.regular20black,
                 ),
                 SizedBox(height: height * 0.04),
