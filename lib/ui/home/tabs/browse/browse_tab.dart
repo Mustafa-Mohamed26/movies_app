@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_colors.dart';
@@ -9,7 +10,7 @@ import 'package:movies_app/widgets/custom_2column_grid_view.dart';
 import 'package:movies_app/widgets/custom_genres_tab_item.dart';
 
 class BrowseTab extends StatefulWidget {
-  final String? selectedGenre; // 👈 نستقبل genre من HomeScreen
+  final String? selectedGenre; // receive from HomeTab
 
   const BrowseTab({super.key, this.selectedGenre});
 
@@ -19,7 +20,7 @@ class BrowseTab extends StatefulWidget {
 
 class _BrowseTabState extends State<BrowseTab> {
   MovieListViewModel movieListViewModel = MovieListViewModel();
-  late String selectedGenre; // 👈 لازم نعملها late
+  late String selectedGenre; 
 
   final ScrollController _scrollController = ScrollController();
 
@@ -27,10 +28,10 @@ class _BrowseTabState extends State<BrowseTab> {
   void initState() {
     super.initState();
 
-    // ✅ لو جاي من HomeTab نستعمله، لو مش جاي نبدأ بـ Action
+    // use action by default
     selectedGenre = widget.selectedGenre ?? "Action";
 
-    // تحميل أول صفحة
+    // load first page
     movieListViewModel.loadMoviesList(
       genre: selectedGenre,
       limit: 20,
@@ -69,7 +70,7 @@ class _BrowseTabState extends State<BrowseTab> {
           padding: EdgeInsets.only(top: height * 0.02, left: width * 0.03),
           child: DefaultTabController(
             length: AppConstants.genres.length,
-            initialIndex: AppConstants.genres.indexOf(selectedGenre), // 👈 يبدأ من genre الحالي
+            initialIndex: AppConstants.genres.indexOf(selectedGenre), 
             child: TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
@@ -88,7 +89,7 @@ class _BrowseTabState extends State<BrowseTab> {
               },
               tabs: AppConstants.genres.map((genreName) {
                 return CustomGenresTabItem(
-                  eventName: genreName,
+                  eventName: AppConstants.getLocalizedGenre(context, genreName),
                   isSelected: selectedGenre == genreName,
                   selectedBgColor: AppColors.yellow,
                   selectedTextStyle: AppStyles.bold20black,
@@ -114,7 +115,7 @@ class _BrowseTabState extends State<BrowseTab> {
               if (state is MovieListEmptyState) {
                 return Center(
                   child: Text(
-                    "No Movies Found",
+                    AppLocalizations.of(context)!.no_movies_found,
                     style: AppStyles.regular20white,
                   ),
                 );

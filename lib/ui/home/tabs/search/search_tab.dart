@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -70,7 +71,7 @@ class _SearchTabState extends State<SearchTab> {
               width: width * 0.05,
               height: height * 0.05,
             ),
-            hintText: "Search",
+            hintText: AppLocalizations.of(context)!.search,
             onChanged: (value) {
               query = value!;
               if (query.isNotEmpty) {
@@ -98,7 +99,7 @@ class _SearchTabState extends State<SearchTab> {
               }
               if (state is MovieListEmptyState) {
                 return Center(
-                  child: Text("No Movies Found", style: AppStyles.regular20white),
+                  child: Text(AppLocalizations.of(context)!.no_movies_found, style: AppStyles.regular20white),
                 );
               }
               if (state is MovieListSuccessState) {

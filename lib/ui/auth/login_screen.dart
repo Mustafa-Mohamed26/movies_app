@@ -2,6 +2,7 @@ import 'package:colorful_iconify_flutter/icons/circle_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
 import 'package:movies_app/ui/auth/cubit/auth_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -10,13 +11,13 @@ import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
+import 'package:movies_app/utils/language_cubit.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_switch.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -30,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
+    var languageCubit = context.read<LanguageCubit>();
     var width = MediaQuery.of(
       context,
     ).size.width; // Get the width of the screen
@@ -42,13 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
       // Listen for changes in the AuthStates
       listener: (BuildContext context, AuthStates state) {
         if (state is AuthLoadingState) {
-          DialogUtils.showLoading(context: context, loadingText: "Loading...");
+          DialogUtils.showLoading(context: context, loadingText: AppLocalizations.of(context)!.loading);
         } else if (state is AuthSuccessState) {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
             message: state.successMessage ?? "",
-            posActionName: "OK",
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () => Navigator.pushNamedAndRemoveUntil(
               context,
               AppRoutes.home,
@@ -60,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
           DialogUtils.showMessage(
             context: context,
             message: state.errorMessage,
-            title: "Error",
-            posActionName: "Ok",
+            title: AppLocalizations.of(context)!.error,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () => Navigator.pop(context),
           );
         }
@@ -96,12 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             size: 30,
                             color: AppColors.white,
                           ),
-                          hintText: "Email",
+                          hintText: AppLocalizations.of(context)!.email,
 
                           // Validate the email input
                           // Check if the email is empty or not valid
                           validate: (text) =>
-                              AppValidators.emailValidator(text),
+                              AppValidators.emailValidator(text, context),
                         ),
                         SizedBox(height: height * 0.02),
 
@@ -119,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             size: 30,
                             color: AppColors.white,
                           ),
-                          hintText: "password",
+                          hintText: AppLocalizations.of(context)!.password,
 
                           // Suffix icon for toggling password visibility
                           // This icon will change based on the isPasswordVisible state
@@ -140,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Validate the password input
                           // Check if the password is empty or less than 6 characters
                           validate: (text) =>
-                              AppValidators.passwordValidator(text),
+                              AppValidators.passwordValidator(text, context),
                         ),
                         SizedBox(height: height * 0.01),
 
@@ -158,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               },
                               child: Text(
-                                'Forget Password?',
+                                AppLocalizations.of(context)!.forget_password,
                                 style: AppStyles.regular14yellow,
                               ),
                             ),
@@ -170,9 +171,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         // This button is used to trigger the login function
                         CustomButton(
                           onPressed: () {
-                            authViewModel.login();
+                            authViewModel.login(context);
                           },
-                          text: "Login",
+                          text: AppLocalizations.of(context)!.login,
                           textStyle: AppStyles.regular20black,
                         ),
                         SizedBox(height: height * 0.01),
@@ -183,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Don't have an account?",
+                              AppLocalizations.of(context)!.donot_have_account,
                               style: AppStyles.regular14white,
                             ),
                             TextButton(
@@ -194,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               },
                               child: Text(
-                                "Create Account",
+                                AppLocalizations.of(context)!.create_account,
                                 style: AppStyles.bold14yellow,
                               ),
                             ),
@@ -202,46 +203,46 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: height * 0.02),
 
-                        // Divider with "Or" text in the middle
-                        // This divider separates the login form from the Google login button
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 2,
-                                color: AppColors.yellow,
-                                indent: width * 0.1,
-                                endIndent: width * 0.05,
-                              ),
-                            ),
-                            Text("OR", style: AppStyles.regular16yellow),
-                            Expanded(
-                              child: Divider(
-                                thickness: 2,
-                                color: AppColors.yellow,
-                                indent: width * 0.05,
-                                endIndent: width * 0.1,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: height * 0.02),
+                        // // Divider with "Or" text in the middle
+                        // // This divider separates the login form from the Google login button
+                        // Row(
+                        //   children: [
+                        //     Expanded(
+                        //       child: Divider(
+                        //         thickness: 2,
+                        //         color: AppColors.yellow,
+                        //         indent: width * 0.1,
+                        //         endIndent: width * 0.05,
+                        //       ),
+                        //     ),
+                        //     Text(AppLocalizations.of(context)!.or, style: AppStyles.regular16yellow),
+                        //     Expanded(
+                        //       child: Divider(
+                        //         thickness: 2,
+                        //         color: AppColors.yellow,
+                        //         indent: width * 0.05,
+                        //         endIndent: width * 0.1,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: height * 0.02),
 
-                        // CustomElevatedButton for Google login
-                        // This button is used to trigger the Google login function
-                        CustomButton(
-                          text: "Login with Google(not available)",
-                          backgroundColor: AppColors.yellow,
-                          borderColorSide: AppColors.yellow,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          hasIcon: true,
-                          iconWidget: Image.asset(AppAssets.google),
-                          textStyle: AppStyles.regular16black,
-                          onPressed: () {
-                            //  Google login
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
+                        // // CustomElevatedButton for Google login
+                        // // This button is used to trigger the Google login function
+                        // CustomButton(
+                        //   text: AppLocalizations.of(context)!.login_with_google,
+                        //   backgroundColor: AppColors.yellow,
+                        //   borderColorSide: AppColors.yellow,
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   hasIcon: true,
+                        //   iconWidget: Image.asset(AppAssets.google),
+                        //   textStyle: AppStyles.regular16black,
+                        //   onPressed: () {
+                        //     //  Google login
+                        //   },
+                        // ),
+                        //SizedBox(height: height * 0.02),
 
                         // CustomSwitch for language selection
                         CustomSwitch(
@@ -249,10 +250,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           onToggle: (val) {
                             if (val) {
                               isEnglish = true;
-                              setState(() {});
+                              setState(() {
+                                languageCubit.changeLanguage(Locale("en"));
+                              });
                             } else {
                               isEnglish = false;
-                              setState(() {});
+                              setState(() {
+                                languageCubit.changeLanguage(Locale("ar"));
+                              });
                             }
                           },
                           activeIcon: Iconify(CircleFlags.lr),

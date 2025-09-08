@@ -1,4 +1,3 @@
-import 'package:movies_app/models/favorite_response.dart';
 import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/models/user_response.dart';
 

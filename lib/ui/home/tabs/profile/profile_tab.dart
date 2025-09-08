@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_states.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -27,7 +28,7 @@ class _ProfileTabState extends State<ProfileTab>
   void initState() {
     super.initState();
     profileViewModel = context.read<ProfileViewModel>();
-    profileViewModel.getProfile();
+    profileViewModel.getProfile(context: context);
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -98,7 +99,7 @@ class _ProfileTabState extends State<ProfileTab>
                                   "${state.movies?.length ?? 0}",
                                   style: AppStyles.bold36white,
                                 ),
-                                Text("WishList", style: AppStyles.bold24white),
+                                Text(AppLocalizations.of(context)!.wishList, style: AppStyles.bold20white),
                               ],
                             ),
                           ),
@@ -106,7 +107,7 @@ class _ProfileTabState extends State<ProfileTab>
                             child: Column(
                               children: [
                                 Text("${state.historyMovies?.length ?? 0}", style: AppStyles.bold36white),
-                                Text("History", style: AppStyles.bold24white),
+                                Text(AppLocalizations.of(context)!.history, style: AppStyles.bold20white),
                               ],
                             ),
                           ),
@@ -129,7 +130,7 @@ class _ProfileTabState extends State<ProfileTab>
                                   AppRoutes.updateProfile,
                                 );
                               },
-                              text: "Edit Profile",
+                              text: AppLocalizations.of(context)!.edit_profile,
                               textStyle: AppStyles.regular20black,
                             ),
                           ),
@@ -147,7 +148,7 @@ class _ProfileTabState extends State<ProfileTab>
                                   (result) => false,
                                 );
                               },
-                              text: "Exit",
+                              text: AppLocalizations.of(context)!.exit,
                               hasIcon: true,
                               iconWidget: const Icon(
                                 Icons.exit_to_app,
@@ -174,7 +175,7 @@ class _ProfileTabState extends State<ProfileTab>
                       controller: _tabController,
                       tabs: [
                         Tab(
-                          text: "WatchList",
+                          text: AppLocalizations.of(context)!.wishList,
                           icon: Icon(
                             Icons.list,
                             size: height * 0.04,
@@ -182,7 +183,7 @@ class _ProfileTabState extends State<ProfileTab>
                           ),
                         ),
                         Tab(
-                          text: "History",
+                          text: AppLocalizations.of(context)!.history,
                           icon: Icon(
                             Icons.folder,
                             color: AppColors.yellow,

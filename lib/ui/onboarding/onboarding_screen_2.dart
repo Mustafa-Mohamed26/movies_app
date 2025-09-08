@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/models/onboarding_item.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
+import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen2 extends StatefulWidget {
   const OnboardingScreen2({super.key});
@@ -13,45 +16,55 @@ class OnboardingScreen2 extends StatefulWidget {
 }
 
 class _OnboardingScreen2State extends State<OnboardingScreen2> {
-  int currentIndex = 0;
+  int currentIndex = 0; // Index of the current slide
 
-  final List<OnboardingItem> items = [
+  // List of onboarding items
+  late final List<OnboardingItem> items = [
     OnboardingItem(
       image: AppAssets.onboarding2,
-      title: "Discover Movies",
+      title: AppLocalizations.of(context)!.onboarding2_title1,
       subtitle:
-          "Explore a vast collection of movies in all qualities and genres. Find your next favorite film with ease.",
+          AppLocalizations.of(context)!.onboarding2_subtitle1,
     ),
     OnboardingItem(
       image: AppAssets.onboarding3,
-      title: "Explore All Genres",
+      title: AppLocalizations.of(context)!.onboarding2_title2,
       subtitle:
-          "Discover movies from every genre, in all available qualities. Find something new and exciting to watch every day.",
+          AppLocalizations.of(context)!.onboarding2_subtitle2,
     ),
     OnboardingItem(
       image: AppAssets.onboarding4,
-      title: "Create Watch lists",
+      title: AppLocalizations.of(context)!.onboarding2_title3,
       subtitle:
-          "Save movies to your watch list to keep track of what you want to watch next. Enjoy films in various qualities and genres.",
+          AppLocalizations.of(context)!.onboarding2_subtitle3,
     ),
     OnboardingItem(
       image: AppAssets.onboarding5,
-      title: "Rate, Review, and Learn",
+      title: AppLocalizations.of(context)!.onboarding2_title4,
       subtitle:
-          "Share your thoughts on the movies you've watched. Dive deep into film details and help others discover great movies with your reviews.",
+          AppLocalizations.of(context)!.onboarding2_subtitle4,
     ),
     OnboardingItem(
       image: AppAssets.onboarding6,
-      title: "Start Watching Now",
-      subtitle: null, // آخر واحدة بدون subtitle
+      title: AppLocalizations.of(context)!.onboarding2_title5,
+      subtitle: null, 
     ),
   ];
+
+  // This method is called when the introduction is completed
+  // It saves a preference indicating that the user has seen the onboarding screen
+  Future<void> _completeOnboarding(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('seenOnboarding', true);
+  if (context.mounted) {
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
     final item = items[currentIndex];
 
     return Scaffold(
@@ -99,26 +112,28 @@ class _OnboardingScreen2State extends State<OnboardingScreen2> {
                       SizedBox(height: height * 0.02),
                     ],
 
+                    // Button
                     CustomButton(
                       textStyle: AppStyles.semibold20black,
                       onPressed: () {
                         setState(() {
                           if (currentIndex == items.length - 1) {
-                            // navigate to home screen
+                            _completeOnboarding(context);
                           } else if (currentIndex < items.length - 1) {
                             currentIndex++;
                           }
                         });
                       },
                       text: (currentIndex == items.length - 1)
-                          ? "Finish"
-                          : "Next",
+                          ? AppLocalizations.of(context)!.finish
+                          : AppLocalizations.of(context)!.next,
                     ),
                     SizedBox(height: height * 0.02),
 
-                    if (currentIndex >= 1) ...[
+                    // Back button
+                    if (currentIndex >= 1) ...[ // ... is used to unpack the list
                       CustomButton(
-                        text: "Back",
+                        text: AppLocalizations.of(context)!.back,
                         backgroundColor: AppColors.black,
                         mainAxisAlignment: MainAxisAlignment.center,
                         textStyle: AppStyles.regular20yellow,

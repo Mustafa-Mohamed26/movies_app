@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -13,7 +14,7 @@ import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/widgets/custom_card.dart';
 
 class HomeTab extends StatefulWidget {
-  final Function(String genre)? onSeeMore; // 👈 نستقبل callback
+  final Function(String genre)? onSeeMore; // callback function
 
   const HomeTab({super.key, this.onSeeMore});
 
@@ -164,20 +165,20 @@ class _HomeTabState extends State<HomeTab> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                selectedGenre,
+                                AppConstants.getLocalizedGenre(context, selectedGenre),
                                 style: AppStyles.regular16white,
                               ),
                               Row(
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      // 👈 نستدعي الـ callback ونبعت genre
+                                      // get genre and call onSeeMore
                                       widget.onSeeMore?.call(selectedGenre);
                                     },
                                     child: Row(
                                       children: [
                                         Text(
-                                          "See More",
+                                          AppLocalizations.of(context)!.see_more,
                                           style: AppStyles.regular16yellow,
                                         ),
                                         Icon(

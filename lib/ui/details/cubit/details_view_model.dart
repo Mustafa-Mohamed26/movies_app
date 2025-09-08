@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:movies_app/api/api_manager.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/models/movie_details_response.dart';
 import 'package:movies_app/ui/details/cubit/details_states.dart';
@@ -15,6 +16,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
     required int? movieId,
     required bool withCast,
     required bool withImages,
+    required BuildContext context,
   }) async {
     emit(DetailsLoadingState());
     try {
@@ -25,7 +27,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
       );
       if (response?.status != "ok") {
         emit(
-          DetailsErrorState(errorMessage: response?.statusMessage ?? "Error"),
+          DetailsErrorState(errorMessage: response?.statusMessage ?? AppLocalizations.of(context)!.error),
         );
         return;
       }
@@ -35,13 +37,13 @@ class DetailsViewModel extends Cubit<DetailsStates> {
     }
   }
 
-  void loadMovieSuggestions({required int? movieId}) async {
+  void loadMovieSuggestions({required int? movieId, required BuildContext context}) async {
     emit(DetailsLoadingState());
     try {
       var response = await ApiManager.getMovieSuggestions(movieId: movieId);
       if (response?.status != "ok") {
         emit(
-          DetailsErrorState(errorMessage: response?.statusMessage ?? "Error"),
+          DetailsErrorState(errorMessage: response?.statusMessage ?? AppLocalizations.of(context)!.error),
         );
         return;
       }
@@ -51,7 +53,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
     }
   }
 
-  Future<void> launchURL(String url) async {
+  Future<void> launchURL(String url, BuildContext context) async {
     try {
       final Uri uri = Uri.parse(Uri.encodeFull(url));
       final bool launched = await launchUrl(
@@ -59,14 +61,14 @@ class DetailsViewModel extends Cubit<DetailsStates> {
         mode: LaunchMode.externalApplication,
       );
       if (!launched) {
-        debugPrint("Could not launch $url");
+        debugPrint("${AppLocalizations.of(context)!.details_view_model_not_launch} $url");
       }
     } catch (e) {
-      debugPrint("Launch error: $e");
+      debugPrint("${AppLocalizations.of(context)!.details_view_model_launch_error} $e");
     }
   }
 
-  void addToFavorites({required Movie movie}) async {
+  void addToFavorites({required Movie movie, required BuildContext context}) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString('token');
@@ -80,7 +82,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
       );
 
       if (response?.message != "Added to favourite successfully") {
-        emit(DetailsErrorState(errorMessage: response?.message ?? "Error"));
+        emit(DetailsErrorState(errorMessage: response?.message ?? AppLocalizations.of(context)!.error));
         return;
       }
       emit(
@@ -88,7 +90,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
                 ? (state as DetailsSuccessState)
                 : DetailsSuccessState())
             .copyWith(
-              successMessage: response?.message ?? "Success",
+              successMessage: response?.message ?? AppLocalizations.of(context)!.success,
               isFavorite: true,
             ),
       );
@@ -97,7 +99,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
     }
   }
 
-  void deleteFromFavorites({required int movieId}) async {
+  void deleteFromFavorites({required int movieId, required BuildContext context}) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString('token');
@@ -107,7 +109,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
       );
 
       if (response?.message != "Removed from favourite successfully") {
-        emit(DetailsErrorState(errorMessage: response?.message ?? "Error"));
+        emit(DetailsErrorState(errorMessage: response?.message ?? AppLocalizations.of(context)!.error));
         return;
       }
       emit(
@@ -115,7 +117,7 @@ class DetailsViewModel extends Cubit<DetailsStates> {
                 ? (state as DetailsSuccessState)
                 : DetailsSuccessState())
             .copyWith(
-              successMessage: response?.message ?? "Success",
+              successMessage: response?.message ?? AppLocalizations.of(context)!.success,
               isFavorite: false,
             ),
       );

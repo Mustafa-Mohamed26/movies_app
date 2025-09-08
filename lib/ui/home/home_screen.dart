@@ -14,13 +14,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
-  String? browseGenre; // 👈 نخزن genre اللي جاي من HomeTab
+  String? browseGenre; // currently selected genre
 
   void onTabSelected(int index, {String? genre}) {
     setState(() {
       currentIndex = index;
       if (genre != null) {
-        browseGenre = genre; // نخزن genre المختار
+        browseGenre = genre; // update currently selected genre
       }
     });
   }
@@ -29,11 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final pages = [
       HomeTab(onSeeMore: (genre) {
-        // 👈 من هنا نغير index ونبعت genre
+        // send genre and index of browse tab
         onTabSelected(2, genre: genre);
       }),
       const SearchTab(),
-      BrowseTab(selectedGenre: browseGenre), // 👈 نبعت genre
+      BrowseTab(selectedGenre: browseGenre), // pass currently selected genre
       const ProfileTab(),
     ];
 

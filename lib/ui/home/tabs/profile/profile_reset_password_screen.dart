@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_states.dart';
 import 'package:movies_app/ui/home/tabs/profile/bloc/profile_view_model.dart';
 import 'package:movies_app/utils/app_assets.dart';
@@ -42,13 +43,13 @@ class _ProfileResetPasswordScreenState
       listener: (context, state) {
         if (state is ProfileLoadingState) {
           DialogUtils.hideLoading(context: context);
-          DialogUtils.showLoading(context: context, loadingText: "Loading...");
+          DialogUtils.showLoading(context: context, loadingText: AppLocalizations.of(context)!.loading);
         } else if (state is ProfileSuccessState) {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
-            message: state.successMessage ?? "Success",
-            posActionName: "OK",
+            message: state.successMessage ?? AppLocalizations.of(context)!.success,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () {
               Navigator.pushNamedAndRemoveUntil(
                 context,
@@ -62,12 +63,12 @@ class _ProfileResetPasswordScreenState
           DialogUtils.showMessage(
             context: context,
             message: state.errorMessage,
-            title: "Error",
+            title: AppLocalizations.of(context)!.error,
           );
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Reset Password")),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.reset_password)),
         body: Form(
           key: profileViewModel.resetPasswordFormKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -92,7 +93,7 @@ class _ProfileResetPasswordScreenState
                     size: 30,
                     color: AppColors.white,
                   ),
-                  hintText: "Old password",
+                  hintText: AppLocalizations.of(context)!.old_password,
 
                   // Suffix icon for toggling password visibility
                   // This icon will change based on the isPasswordVisible state
@@ -111,7 +112,7 @@ class _ProfileResetPasswordScreenState
                   ),
 
                   // Validate the password input
-                  validate: (text) => AppValidators.passwordValidator(text),
+                  validate: (text) => AppValidators.passwordValidator(text, context),
                 ),
 
                 SizedBox(height: height * 0.02),
@@ -130,7 +131,7 @@ class _ProfileResetPasswordScreenState
                     size: 30,
                     color: AppColors.white,
                   ),
-                  hintText: "password",
+                  hintText: AppLocalizations.of(context)!.password,
 
                   // Suffix icon for toggling password visibility
                   // This icon will change based on the isPasswordVisible state
@@ -149,7 +150,7 @@ class _ProfileResetPasswordScreenState
                   ),
 
                   // Validate the password input
-                  validate: (text) => AppValidators.passwordValidator(text),
+                  validate: (text) => AppValidators.passwordValidator(text, context),
                 ),
                 SizedBox(height: height * 0.02),
 
@@ -167,7 +168,7 @@ class _ProfileResetPasswordScreenState
                     size: 30,
                     color: AppColors.white,
                   ),
-                  hintText: "Confirm Password",
+                  hintText: AppLocalizations.of(context)!.confirm_password,
                   suffixIcon: IconButton(
                     icon: Icon(
                       isRePasswordVisible
@@ -183,7 +184,7 @@ class _ProfileResetPasswordScreenState
                   ),
                   validate: (text) => AppValidators.confirmPasswordValidator(
                     text,
-                    profileViewModel.passwordController.text,
+                    profileViewModel.passwordController.text,context
                   ),
                 ),
 
@@ -191,9 +192,9 @@ class _ProfileResetPasswordScreenState
 
                 CustomButton(
                   onPressed: () {
-                    profileViewModel.resetPassword();
+                    profileViewModel.resetPassword(context: context);
                   },
-                  text: "Reset Password",
+                  text: AppLocalizations.of(context)!.reset_password,
                   textStyle: AppStyles.regular20black,
                 ),
 
