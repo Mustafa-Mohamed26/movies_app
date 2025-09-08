@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/api/api_manager.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/models/login_request.dart';
 import 'package:movies_app/models/user_request.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
@@ -9,22 +10,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthViewModel extends Cubit<AuthStates> {
   AuthViewModel() : super(AuthInitialState());
   // controllers
-  TextEditingController nameController = TextEditingController(text: "mustafa");
+  TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController(text: "mustafa1234@gmail.com");
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController(text: "esayhya73M@");
+  TextEditingController passwordController = TextEditingController();
 
-  TextEditingController confirmPasswordController = TextEditingController(text: "esayhya73M@");
+  TextEditingController confirmPasswordController = TextEditingController();
 
-  TextEditingController phoneController = TextEditingController(text: "+201234567899");
+  TextEditingController phoneController = TextEditingController();
 
   int? avaterId;
 
   // GlobalKey for the form state
   var formKey = GlobalKey<FormState>();
 
-  void register() async {
+  void register(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       emit(AuthLoadingState());
       try {
@@ -39,12 +40,12 @@ class AuthViewModel extends Cubit<AuthStates> {
           ),
         );
         if (response?.message != "User created successfully") {
-          emit(AuthErrorState(errorMessage: response?.message ?? "Error"));
+          emit(AuthErrorState(errorMessage: response?.message ?? AppLocalizations.of(context)!.error));
           return;
         }
         emit(
           AuthSuccessState(
-            successMessage: response?.message ?? "success",
+            successMessage: response?.message ?? AppLocalizations.of(context)!.auth_view_model_login_success,
             user: response?.user,
           ),
         );
@@ -54,7 +55,7 @@ class AuthViewModel extends Cubit<AuthStates> {
     }
   }
 
-  void login() async {
+  void login(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       try {
         emit(AuthLoadingState());
@@ -65,7 +66,7 @@ class AuthViewModel extends Cubit<AuthStates> {
           ),
         );
         if (response?.message != "Success Login") {
-          emit(AuthErrorState(errorMessage: response?.message ?? "Error"));
+          emit(AuthErrorState(errorMessage: response?.message ?? AppLocalizations.of(context)!.error));
           return;
         }
         if (response?.message == "Success Login") {
@@ -75,7 +76,7 @@ class AuthViewModel extends Cubit<AuthStates> {
           await pref.setString('token', response?.token ?? '');
           emit(
             AuthSuccessState(
-              successMessage: response?.message ?? "success",
+              successMessage: response?.message ?? AppLocalizations.of(context)!.auth_view_model_login_success,
             ),
           );
         }

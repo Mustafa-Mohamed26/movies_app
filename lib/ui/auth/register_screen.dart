@@ -3,6 +3,7 @@ import 'package:colorful_iconify_flutter/icons/circle_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/ui/auth/cubit/auth_states.dart';
 import 'package:movies_app/ui/auth/cubit/auth_view_model.dart';
 import 'package:movies_app/utils/app_colors.dart';
@@ -11,12 +12,13 @@ import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/utils/app_styles.dart';
 import 'package:movies_app/utils/app_validators.dart';
 import 'package:movies_app/utils/dialog_utils.dart';
+import 'package:movies_app/utils/language_cubit.dart';
 import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_switch.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -40,6 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var languageCubit = context.read<LanguageCubit>();
     var width = MediaQuery.of(
       context,
     ).size.width; // Get the width of the screen
@@ -52,14 +55,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Listen for changes in the AuthStates
       listener: (BuildContext context, AuthStates state) {
         if (state is AuthLoadingState) {
-          DialogUtils.showLoading(context: context, loadingText: "Loading...");
+          DialogUtils.showLoading(
+            context: context,
+            loadingText: AppLocalizations.of(context)!.loading,
+          );
         } else if (state is AuthSuccessState) {
           DialogUtils.hideLoading(context: context);
           DialogUtils.showMessage(
             context: context,
             message: state.successMessage ?? "",
-            title: "Success",
-            posActionName: "OK",
+            title: AppLocalizations.of(
+              context,
+            )!.auth_view_model_register_success,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () => Navigator.pushNamedAndRemoveUntil(
               context,
               AppRoutes.login,
@@ -71,14 +79,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           DialogUtils.showMessage(
             context: context,
             message: state.errorMessage,
-            title: "Error",
-            posActionName: "Ok",
+            title: AppLocalizations.of(context)!.error,
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () => Navigator.pop(context),
           );
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Register")),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.register)),
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.04),
@@ -126,7 +134,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Avatar", style: AppStyles.regular16white),
+                        Text(
+                          AppLocalizations.of(context)!.avater,
+                          style: AppStyles.regular16white,
+                        ),
                       ],
                     ),
                     SizedBox(height: height * 0.01),
@@ -142,7 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         size: 30,
                         color: AppColors.white,
                       ),
-                      hintText: "Name",
+                      hintText: AppLocalizations.of(context)!.name,
                     ),
                     SizedBox(height: height * 0.02),
 
@@ -159,11 +170,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         size: 30,
                         color: AppColors.white,
                       ),
-                      hintText: "Email",
+                      hintText: AppLocalizations.of(context)!.email,
 
                       // Validate the email input
                       // Check if the email is empty or not valid
-                      validate: (text) => AppValidators.emailValidator(text),
+                      validate: (text) => AppValidators.emailValidator(text,
+                          context),
                     ),
                     SizedBox(height: height * 0.02),
 
@@ -181,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         size: 30,
                         color: AppColors.white,
                       ),
-                      hintText: "password",
+                      hintText: AppLocalizations.of(context)!.password,
 
                       // Suffix icon for toggling password visibility
                       // This icon will change based on the isPasswordVisible state
@@ -201,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       // Validate the password input
                       // Check if the password is empty or less than 6 characters
-                      validate: (text) => AppValidators.passwordValidator(text),
+                      validate: (text) => AppValidators.passwordValidator(text, context),
                     ),
 
                     SizedBox(height: height * 0.02),
@@ -220,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         size: 30,
                         color: AppColors.white,
                       ),
-                      hintText: "Confirm Password",
+                      hintText: AppLocalizations.of(context)!.confirm_password,
                       suffixIcon: IconButton(
                         icon: Icon(
                           isRePasswordVisible
@@ -238,6 +250,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           AppValidators.confirmPasswordValidator(
                             text,
                             authViewModel.passwordController.text,
+                            context,
                           ),
                     ),
                     SizedBox(height: height * 0.02),
@@ -254,17 +267,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         size: 30,
                         color: AppColors.white,
                       ),
-                      hintText: "Phone Number",
-                      validate: (text) => AppValidators.phoneValidator(text),
+                      hintText: AppLocalizations.of(context)!.phone_number,
+                      validate: (text) =>
+                          AppValidators.phoneValidator(text, context),
                     ),
                     SizedBox(height: height * 0.02),
 
                     // CustomButton for creating an account
                     CustomButton(
                       onPressed: () {
-                        authViewModel.register();
+                        authViewModel.register(context);
                       },
-                      text: "Create Account",
+                      text: AppLocalizations.of(context)!.create_account,
                       textStyle: AppStyles.regular20black,
                     ),
 
@@ -273,7 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already have an account?",
+                          AppLocalizations.of(context)!.already_have_account,
                           style: AppStyles.regular14white,
                         ),
                         TextButton(
@@ -283,7 +297,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               AppRoutes.login,
                             );
                           },
-                          child: Text("Login", style: AppStyles.bold14yellow),
+                          child: Text(
+                            AppLocalizations.of(context)!.login,
+                            style: AppStyles.bold14yellow,
+                          ),
                         ),
                       ],
                     ),
@@ -295,10 +312,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onToggle: (val) {
                         if (val) {
                           isEnglish = true;
-                          setState(() {});
+                          setState(() {
+                            languageCubit.changeLanguage(Locale("en"));
+                          });
                         } else {
                           isEnglish = false;
-                          setState(() {});
+                          setState(() {
+                            languageCubit.changeLanguage(Locale("ar"));
+                          });
                         }
                       },
                       activeIcon: Iconify(CircleFlags.lr),

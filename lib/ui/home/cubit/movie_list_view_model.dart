@@ -2,39 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/api/api_manager.dart';
 import 'package:movies_app/ui/home/cubit/movie_list_states.dart';
+import 'package:movies_app/models/list_of_movies_response.dart';
 
 class MovieListViewModel extends Cubit<MovieListStates> {
   MovieListViewModel() : super(MovieListInitialState());
 
   TextEditingController searchController = TextEditingController();
 
-  void loadMoviesList({String? genre, int? limit, int? page, String? query}) async {
-    // Emit loading state
-    emit(MovieListLoadingState());
+  int currentPage = 1;
+  bool isLoadingMore = false;
+  List<Movies> allMovies = [];
+
+  void loadMoviesList({
+    String? genre,
+    int? limit,
+    int? page,
+    String? query,
+    bool isLoadMore = false,
+  }) async {
     try {
+      if (isLoadMore) {
+        isLoadingMore = true;
+      } else {
+        emit(MovieListLoadingState());
+        allMovies.clear();
+        currentPage = 1;
+      }
+
       var response = await ApiManager.getListOfMovies(
         genre: genre,
         limit: limit,
         page: page,
         query: searchController.text,
       );
-      
-      // Check if response status is not "ok"
+
       if (response?.status != "ok") {
-        emit(
-          MovieListErrorState(errorMessage: response?.statusMessage ?? "Error"),
-        );
+        emit(MovieListErrorState(
+            errorMessage: response?.statusMessage ?? "Error"));
+        isLoadingMore = false;
         return;
       }
-      // Check if movies list is empty
-      if (response!.data!.movies!.isEmpty) {
+
+      var newMovies = response!.data!.movies ?? [];
+
+      if (newMovies.isEmpty && !isLoadMore) {
         emit(MovieListEmptyState());
+        isLoadingMore = false;
         return;
       }
-      // Emit success state with movies list
-      emit(MovieListSuccessState(moviesList: response.data?.movies ?? []));
+
+      allMovies.addAll(newMovies);
+
+      emit(MovieListSuccessState(moviesList: List.from(allMovies)));
+
+      if (isLoadMore) {
+        currentPage++;
+      }
+
+      isLoadingMore = false;
     } catch (e) {
       emit(MovieListErrorState(errorMessage: e.toString()));
+      isLoadingMore = false;
     }
   }
 }

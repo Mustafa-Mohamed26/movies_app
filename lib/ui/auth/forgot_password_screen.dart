@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/l10n/app_localizations.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_colors.dart';
 import 'package:movies_app/utils/app_styles.dart';
@@ -6,9 +7,9 @@ import 'package:movies_app/widgets/custom_button.dart';
 import 'package:movies_app/widgets/custom_text_form_field.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   // GlobalKey for the form state
-  var formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   ForgotPasswordScreen({super.key});
 
@@ -17,7 +18,7 @@ class ForgotPasswordScreen extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: Text("Forgot Password")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.forget_password)),
       body: Form(
         key: formKey,
         child: Padding(
@@ -39,19 +40,19 @@ class ForgotPasswordScreen extends StatelessWidget {
                   size: 30,
                   color: AppColors.white,
                 ),
-                hintText: "Email",
+                hintText: AppLocalizations.of(context)!.email,
 
                 // Validate the email input
                 // Check if the email is empty or not valid
                 validate: (text) {
                   if (text == null || text.isEmpty) {
-                    return "Please enter your email";
+                    return AppLocalizations.of(context)!.validate_enter_email;
                   }
                   final bool emailValid = RegExp(
                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                   ).hasMatch(text);
                   if (!emailValid) {
-                    return "Please enter a valid email";
+                    return AppLocalizations.of(context)!.validate_valid_email;
                   }
                   return null;
                 },
@@ -59,7 +60,7 @@ class ForgotPasswordScreen extends StatelessWidget {
               SizedBox(height: height * 0.02),
               CustomButton(
                 onPressed: () {},
-                text: "Verify Email",
+                text: AppLocalizations.of(context)!.forget_password_verify,
                 textStyle: AppStyles.regular20black,
               ),
             ],

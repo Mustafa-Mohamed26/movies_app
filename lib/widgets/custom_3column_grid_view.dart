@@ -1,50 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/models/favorite_response.dart';
 import 'package:movies_app/models/list_of_movies_response.dart';
+import 'package:movies_app/models/movie_data.dart';
 import 'package:movies_app/utils/app_assets.dart';
 import 'package:movies_app/utils/app_routes.dart';
 import 'package:movies_app/widgets/custom_card.dart';
 
-class Custom2columnGridView extends StatelessWidget {
+class Custom3columnGridView extends StatelessWidget {
   final int count;
-  final List<Movies> moviesList;
-  final ScrollController? controller; // ✅ اضفنا الكنترولر
+  final List<MovieData>? movies;
 
-  const Custom2columnGridView({
+  const Custom3columnGridView({
     super.key,
     required this.count,
-    required this.moviesList,
-    this.controller, // ✅ استقبله هنا
+    required this.movies,
   });
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+
     return GridView.builder(
-      controller: controller, // ✅ مرره للـ GridView
-      padding: EdgeInsets.symmetric(
-        horizontal: width * 0.05,
-        vertical: height * 0.02,
-      ),
+      padding: EdgeInsets.symmetric(vertical: height * 0.02),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: width * 0.05,
+        crossAxisCount: 3,
+        crossAxisSpacing: width * 0.03,
         mainAxisSpacing: height * 0.02,
         childAspectRatio: 0.7,
       ),
       itemCount: count,
       itemBuilder: (context, index) {
-        final movie = moviesList[index];
+        final movie = movies?[index];
         return CustomCard(
-          image: (movie.mediumCoverImage?.isNotEmpty ?? false)
-              ? movie.mediumCoverImage!
+          image: (movie?.imageURL?.isNotEmpty ?? false)
+              ? movie?.imageURL! ?? ""
               : AppAssets.test1,
-          rate: movie.rating ?? 0.0,
+          rate: movie?.rating ?? 0.0,
           onTap: () {
             Navigator.pushNamed(
               context,
               AppRoutes.details,
-              arguments: movie.id,
+              arguments: int.tryParse(movie?.movieId ?? '') ?? 0,
             );
           },
         );
