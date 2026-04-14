@@ -1,37 +1,51 @@
-# 🎬 Flutter Movies App
+<div align="center">
+  <img src="assets/branding/banner.png" alt="Movies App Banner" width="100%">
 
-A Flutter-based Movies App built with **clean architecture (MVVM)** and **BLoC** for state management.
-The app allows users to browse movies, search, mark favorites, and save watched movies locally.
+  # 🎬 Movies App
+
+  [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+  [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+  [![Architecture](https://img.shields.io/badge/Architecture-MVVM-orange?style=for-the-badge)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
+  [![State Management](https://img.shields.io/badge/State%20Management-BLoC-blueviolet?style=for-the-badge)](https://bloclibrary.dev)
+
+  ### *Your Ultimate Cinematic Companion*
+</div>
+
+---
+
+## 🌟 Overview
+
+**Movies App** is a premium, feature-rich Flutter application designed for movie enthusiasts. Built with a focus on **clean architecture (MVVM)** and robust state management using **BLoC**, it provides a seamless and high-performance experience for discovering, tracking, and managing your favorite cinematic content.
+
+From browsing the latest blockbusters to maintaining a personal watch list, Movies App delivers a world-class UI/UX with smooth animations and multi-language support.
 
 ---
 
 ## ✨ Features
 
-* 🔑 **Authentication** (Sign up / Login)
-* 🔄 **Password Reset** & Update Profile
-* 🎥 **Browse & Search Movies** via REST API
-* ❤️ Add movies to **Favorites**
-* 💾 Save watched movies locally using **Hive**
-* 🌍 **Localization** (Multi-language support)
-* 🛠️ Built with **MVVM architecture** + **BLoC**
+- 🔐 **Secure Authentication**: Full sign-up and login flow to protect your personalized experience.
+- 🔁 **Account Management**: Forgot password recovery and profile update capabilities.
+- 🔍 **Global Movie Search**: Instantly find any movie through a powerful REST API integration.
+- ❤️ **Personal Collection**: Add movies to your favorites with a single tap.
+- 📦 **Offline Watched List**: Keep track of movies you've already seen, persisted locally via **Hive**.
+- 🌍 **Internationalization**: Fully localized support for multiple languages (English/Arabic).
+- 🎨 **Premium UI**: Modern dark theme with cinematic aesthetics and high-end visual feedback.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Architecture
 
-* **Flutter** (Dart)
-* **BLoC** – State Management
-* **MVVM** – Clean Architecture
-* **Hive** – Local Storage
-* **REST API** – Data Fetching
-* **HTTP Package** – Networking
-* **Localization (Intl / Flutter Gen)** – Multi-language
+This project is built using modern industry standards to ensure scalability and maintainability.
 
----
-
-## 📸 Screenshots
-
-*Add some app screenshots or GIFs here if available*
+| Layer | Technology |
+| :--- | :--- |
+| **Framework** | [Flutter](https://flutter.dev) 🚀 |
+| **State Management** | [BLoC](https://pub.dev/packages/flutter_bloc) 🧱 |
+| **Architecture** | Clean Architecture (MVVM) 🏗️ |
+| **Networking** | [HTTP](https://pub.dev/packages/http) 🌐 |
+| **Local Storage** | [Hive](https://pub.dev/packages/hive) 💾 |
+| **Fonts** | [Google Fonts](https://pub.dev/packages/google_fonts) 🖋️ |
+| **Caching** | [Cached Network Image](https://pub.dev/packages/cached_network_image) 🖼️ |
 
 ---
 
@@ -39,60 +53,62 @@ The app allows users to browse movies, search, mark favorites, and save watched 
 
 ### Prerequisites
 
-* Install [Flutter SDK](https://docs.flutter.dev/get-started/install)
-* Install [Android Studio](https://developer.android.com/studio) or [VS Code](https://code.visualstudio.com/)
+* Ensure you have the [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
+* A physical device or emulator (Android/iOS).
 
-### Setup
+### Installation
 
-1. Clone the repo:
-
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/flutter-movies-app.git
+   git clone https://github.com/Mustafa-Mohamed26/flutter-movies-app.git
    cd flutter-movies-app
    ```
 
-2. Install dependencies:
-
+2. **Install dependencies:**
    ```bash
    flutter pub get
    ```
 
-3. Run the app:
+3. **Generate localizations and Hive adapters:**
+   ```bash
+   flutter pub run build_runner build
+   ```
 
+4. **Launch the application:**
    ```bash
    flutter run
    ```
 
 ---
 
-## 📂 Project Structure
+## 📂 Project Roadmap
 
-```
-lib/
-│── l10n/                # Localization
-│── models/              # Data Models
-│── ui/                  # Screens & Widgets
-│   ├── home/            # Home & Tabs
-│   ├── details/         # Movie Details
-│   └── auth/            # Authentication
-│── utils/               # Constants, Colors, Styles
-│── widgets/             # Shared Widgets
-```
+- [x] Initial Authentication Flow
+- [x] Movie Discovery & Search integration
+- [x] Local Storage for Favorites & Watched List
+- [x] Multi-language support (English/Arabic)
+- [ ] Watchlist Notifications (Planned)
+- [ ] Dark/Light Theme Toggle (Planned)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!
+We welcome contributions! If you'd like to improve Movies App:
+1. Fork the Project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
-## 🔗 Repo
-
-👉 [Repo Link Here](https://github.com/Mustafa-Mohamed26/flutter-movies-app)
+<div align="center">
+  Developed by <a href="https://github.com/Mustafa-Mohamed26">Mustafa Mohamed</a>
+</div>
