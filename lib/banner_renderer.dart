@@ -60,11 +60,16 @@ class BannerWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Image.file(
-                    File('assets/images/splash_logo.png'),
-                    width:140,
+                  child: Container(
+                    width: 140,
                     height: 140,
-                    color: const Color(0xFFF6BD00),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF6BD00),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.play_arrow, size: 100, color: Colors.black,),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 50),

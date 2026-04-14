@@ -27,8 +27,8 @@ void main() {
       ),
     );
 
-    // Wait for everything to settle (especially fonts if possible, though flutter test fonts are limited)
-    await tester.pumpAndSettle();
+    // Wait for everything to settle
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 2. Capture the image
     final RenderRepaintBoundary boundary = 
